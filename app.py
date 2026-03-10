@@ -98,53 +98,87 @@ if not st.session_state['logged_in']:
                 st.error(f"Lỗi truy xuất hệ thống: {e}")
 
 # ==========================================
-# 6. KHU VỰC NHẬP LIỆU CHÍNH THỨC
+# ==========================================
+# 6. KHU VỰC NHẬP LIỆU CHÍNH THỨC (BỔ SUNG QUẢN LÝ PHIẾU)
 # ==========================================
 else:
-    st.info(f"👤 Đang thao tác: **{st.session_state['ten_to']}** | 📍 Vị trí lưu trữ: **Hàng {st.session_state['hang_cua_to']}**")
+    st.info(f"👤 **{st.session_state['ten_to']}** | 📍 Hàng dữ liệu: **{st.session_state['hang_cua_to']}**")
 
-    cap_bau_cu = "Quoc Hoi" 
-    try:
-        sheet_target = file_du_lieu.worksheet(cap_bau_cu)
-    except:
-        st.error("Không tìm thấy dữ liệu cấp Quốc Hội.")
-        st.stop()
+    # --- CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
+    DANH_SACH_DAI_BIEU = {
+        "Đơn vị số 1": ["Đại biểu A", "Đại biểu B", "Đại biểu C"],
+        "Đơn vị số 2": ["Đại biểu D", "Đại biểu E", "Đại biểu F"]
+    }
 
-    with st.form("Data_Entry_Form"):
-        st.markdown("#### Báo cáo số lượng cử tri đi bầu")
+    # --- CẤU HÌNH TRỎ CỘT (QUAN TRỌNG: Bạn sửa các chữ cái này cho khớp với file Sheets của bạn) ---
+    MAP_COT = {
+        # Phần quản lý phiếu chung
+        "phieu_phat_ra": "M",
+        "phieu_thu_vao": "N",
+        "phieu_hop_le": "O",
+        "phieu_khong_hop_le": "P",
+        # Phần đại biểu (Ví dụ trỏ tiếp từ cột Q trở đi)
+        "Đại biểu A": "Q", "Đại biểu B": "R", "Đại biểu C": "S",
+        "Đại biểu D": "T", "Đại biểu E": "U", "Đại biểu F": "V"
+    }
+
+    PHAN_BO_TO = {f"Tổ {i}": "Đơn vị số 1" if i <= 23 else "Đơn vị số 2" for i in range(1, 47)}
+    don_vi_cua_to = PHAN_BO_TO.get(st.session_state['ten_to'], "Đơn vị số 1")
+
+    with st.form("Full_Data_Form"):
+        st.markdown("#### 1. Tiến độ cử tri (Cập nhật liên tục)")
+        c1, c2, c3 = st.columns(3)
+        with c1: tong = st.number_input("Tổng số cử tri (J)", min_value=0, step=1)
+        with c2: nam = st.number_input("Nam (K)", min_value=0, step=1)
+        with c3: nu = st.number_input("Nữ (L)", min_value=0, step=1)
+
+        st.divider()
+        st.markdown("#### 2. Nghiệp vụ Quản lý Phiếu (Sau khi kiểm phiếu)")
+        c4, c5 = st.columns(2)
+        with c4: p_phat = st.number_input("Số phiếu phát ra (M)", min_value=0, step=1)
+        with c5: p_thu = st.number_input("Số phiếu thu vào (N)", min_value=0, step=1)
         
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            tong_cu_tri = st.number_input("Tổng số (J)", min_value=0, step=1)
-        with col2:
-            cu_tri_nam = st.number_input("Nam (K)", min_value=0, step=1)
-        with col3:
-            cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
-        
-        st.write("")
-        submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
+        c6, c7 = st.columns(2)
+        with c6: p_hople = st.number_input("Số phiếu hợp lệ (O)", min_value=0, step=1)
+        with c7: p_khonghople = st.number_input("Số phiếu không hợp lệ (P)", min_value=0, step=1)
 
-        if submit_data:
-            if tong_cu_tri != (cu_tri_nam + cu_tri_nu):
-                st.error("⚠️ Lỗi logic: Tổng số cử tri không khớp với phép tính (Nam + Nữ).")
-            elif tong_cu_tri == 0:
-                st.warning("⚠️ Số liệu đang bằng 0, vui lòng nhập số liệu trước khi gửi.")
+        st.divider()
+        st.markdown(f"#### 3. Kết quả bầu cử Đại biểu ({don_vi_cua_to})")
+        kq_dai_bieu = {}
+        for db in DANH_SACH_DAI_BIEU[don_vi_cua_to]:
+            kq_dai_bieu[db] = st.number_input(f"Số phiếu của: {db}", min_value=0, step=1)
+
+        if st.form_submit_button("Lưu & Gửi báo cáo toàn bộ", type="primary"):
+            # Kiểm tra logic phiếu
+            if p_thu != (p_hople + p_khonghople):
+                st.error("❌ Lỗi: Phiếu thu vào phải bằng Hợp lệ + Không hợp lệ!")
+            elif tong != (nam + nu):
+                st.error("❌ Lỗi: Tổng cử tri không khớp Nam + Nữ!")
             else:
-                with st.spinner("Đang truyền dữ liệu về máy chủ..."):
-                    du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
-                    hang_hien_tai = st.session_state['hang_cua_to']
-                    vung_cap_nhat = f"J{hang_hien_tai}:L{hang_hien_tai}"
+                with st.spinner("Đang truyền dữ liệu..."):
+                    hang = st.session_state['hang_cua_to']
+                    updates = []
+                    
+                    # Gom dữ liệu cử tri (J-L)
+                    updates.append({'range': f'J{hang}:L{hang}', 'values': [[tong, nam, nu]]})
+                    # Gom dữ liệu phiếu (M-P)
+                    updates.append({'range': f'{MAP_COT["phieu_phat_ra"]}{hang}:{MAP_COT["phieu_khong_hop_le"]}{hang}', 
+                                    'values': [[p_phat, p_thu, p_hople, p_khonghople]]})
+                    # Gom dữ liệu từng đại biểu
+                    for db_name, so_phieu in kq_dai_bieu.items():
+                        col = MAP_COT.get(db_name)
+                        if col: updates.append({'range': f'{col}{hang}', 'values': [[so_phieu]]})
                     
                     try:
-                        sheet_target.update(vung_cap_nhat, du_lieu_cu_tri)
-                        time.sleep(0.5) 
-                        st.success(f"✅ Đã lưu thành công lên hệ thống tổng!")
+                        file_du_lieu.worksheet("Quoc Hoi").batch_update(updates)
+                        st.success("✅ Đã lưu báo cáo thành công!")
                         st.balloons()
                     except Exception as e:
-                        st.error("❌ Lỗi đường truyền, vui lòng thử lại sau 1 phút.")
+                        st.error(f"Lỗi: {e}")
 
-    if st.button("🔒 Đăng xuất an toàn"):
+    if st.button("🔒 Đăng xuất"):
         st.session_state['logged_in'] = False
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
