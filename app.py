@@ -139,7 +139,7 @@ else:
 
     # --- 3. BẢN ĐỒ TRỎ CỘT TRÊN GOOGLE SHEETS ---
     MAP_COT_DAI_BIEU = {
-        "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", "Vì Thị Ngoan": "AG", "Cà Thị Thắm": "AI"
+        "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", "Vì Thị Ngoan": "AG", "Cà Thị Thắm": "AI",
         "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC",
         
         "Đại biểu P1_A": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
@@ -228,6 +228,7 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
