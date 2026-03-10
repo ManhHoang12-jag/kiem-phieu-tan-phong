@@ -27,6 +27,19 @@ except Exception as e:
 # 2. THIẾT LẬP GIAO DIỆN & TRẠNG THÁI
 # ==========================================
 st.set_page_config(page_title="Hệ thống Báo cáo Bầu cử - Tân Phong", layout="centered")
+hide_streamlit_style = """
+            <style>
+            /* Ẩn thanh công cụ góc phải trên cùng (chứa con mèo) */
+            [data-testid="stToolbar"] {visibility: hidden !important;}
+            /* Ẩn menu Hamburger */
+            #MainMenu {visibility: hidden;}
+            /* Ẩn chữ "Made with Streamlit" ở dưới đáy */
+            footer {visibility: hidden;}
+            /* Ẩn dải màu trống trên cùng để giao diện đẩy lên cao hơn */
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 st.title("🗳️ Hệ thống Báo cáo Bầu cử - Tân Phong")
 
 # Khởi tạo bộ nhớ tạm để giữ trạng thái đăng nhập
@@ -130,3 +143,4 @@ else:
         st.session_state['logged_in'] = False
 
         st.rerun()
+
