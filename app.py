@@ -58,18 +58,17 @@ if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
 # --- HEADER QUỐC HUY SỬ DỤNG ẢNH TRỰC TIẾP ---
-col_logo, col_title = st.columns([1, 5])
-with col_logo:
-    # Gọi trực tiếp file ảnh đã tải lên GitHub
-    try:
-        st.image("logo.png", width=90)
-    except:
-        st.write("🇻🇳") # Hiển thị cờ nếu file ảnh chưa kịp nhận
-
-with col_title:
-    st.markdown("<h3 style='text-align: left; color: #cc0000; margin-bottom: 0px;'>ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>", unsafe_allow_html=True)
-    st.markdown("<h5 style='text-align: left; color: #333333; margin-top: 5px;'>Cổng Nhập liệu Bầu cử Trực tuyến</h5>", unsafe_allow_html=True)
-st.divider()
+header_html = """
+<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Coat_of_arms_of_Vietnam.svg/200px-Coat_of_arms_of_Vietnam.svg.png" width="75" style="margin-right: 15px; flex-shrink: 0;">
+    
+    <div style="flex-grow: 1; overflow: hidden;">
+        <h3 style="margin: 0; color: #cc0000; font-size: 19px; white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>
+        <h5 style="margin: 0; color: #333333; font-size: 15px; margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5>
+    </div>
+</div>
+"""
+st.markdown(header_html, unsafe_allow_html=True)
 
 # ==========================================
 # 4. KHU VỰC ĐĂNG NHẬP
@@ -154,6 +153,7 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
