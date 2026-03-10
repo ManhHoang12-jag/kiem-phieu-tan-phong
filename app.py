@@ -96,6 +96,7 @@ if not st.session_state['logged_in']:
                     st.error("❌ Mã bảo mật không chính xác!")
             except Exception as e:
                 st.error(f"Lỗi truy xuất hệ thống: {e}")
+                st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
 
 # ==========================================
 # ==========================================
@@ -224,6 +225,7 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
