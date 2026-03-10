@@ -103,6 +103,44 @@ if not st.session_state['logged_in']:
 else:
     st.info(f"👤 Đang thao tác: **{st.session_state['ten_to']}** | 📍 Vị trí lưu trữ: **Hàng {st.session_state['hang_cua_to']}**")
 
+    # ==========================================
+    # CẤU HÌNH DANH SÁCH & TỌA ĐỘ ĐẠI BIỂU
+    # ==========================================
+    # 1. Danh sách đại biểu theo Đơn vị bầu cử
+    DANH_SACH_DAI_BIEU = {
+        "Đơn vị số 1": ["Bà Nguyễn Thị Mai Dinh", "Bà Trần Thị B", "Ông Lê Văn C", "Bà Phạm Thị D", "Ông Đinh Văn E"],
+        "Đơn vị số 2": ["Ông Vũ Văn F", "Bà Hoàng Thị G", "Ông Đặng Văn H", "Bà Lý Thị I"],
+		"Đơn vị số 3": ["Ông Vũ Văn F", "Bà Hoàng Thị G", "Ông Đặng Văn H", "Bà Lý Thị I"],
+        "Đơn vị số 4": ["Ông Trần Văn K", "Bà Lê Thị L", "Ông Phạm Văn M", "Bà Nguyễn Thị N"]
+    }
+
+    # 2. Bản đồ phân bổ Tổ (Điền đủ 46 tổ vào đây)
+    PHAN_BO_TO = {
+        "Tổ 1": "Đơn vị số 1", "Tổ 2": "Đơn vị số 1", "Tổ 3": "Đơn vị số 1",
+        "Tổ 4": "Đơn vị số 2", "Tổ 5": "Đơn vị số 2", "Tổ 6": "Đơn vị số 2",
+        "Tổ 7": "Đơn vị số 3", "Tổ 8": "Đơn vị số 3", "Tổ 9": "Đơn vị số 3"
+    }
+
+    # 3. Bản đồ trỏ CỘT trên Google Sheets cho từng Đại biểu (Bạn sửa các chữ M, N, O... cho khớp với file của bạn)
+    TOA_DO_DAI_BIEU = {
+        "Bà Nguyễn Mai Dinh": "AA", "Bà Trần Thị B": "N", "Ông Lê Văn C": "O", "Bà Phạm Thị D": "P", "Ông Đinh Văn E": "Q",
+        "Ông Vũ Văn F": "R", "Bà Hoàng Thị G": "S", "Ông Đặng Văn H": "T", "Bà Lý Thị I": "U",
+        "Ông Trần Văn K": "V", "Bà Lê Thị L": "W", "Ông Phạm Văn M": "X", "Bà Nguyễn Thị N": "Y"
+    }
+
+    # Nhận diện Tổ thuộc Đơn vị nào
+    don_vi_cua_to = PHAN_BO_TO.get(st.session_state['ten_to'], "Chưa phân bổ")
+
+    if don_vi_cua_to == "Chưa phân bổ":
+        st.error(f"⚠️ {st.session_state['ten_to']} chưa được gắn vào Đơn vị bầu cử. Vui lòng kiểm tra lại cấu hình!")
+        if st.button("🔒 Đăng xuất"):
+            st.session_state['logged_in'] = False
+            st.rerun()
+        st.stop()
+
+    # ==========================================
+    # GIAO DIỆN FORM NHẬP LIỆU
+    # ==========================================
     cap_bau_cu = "Quoc Hoi" 
     try:
         sheet_target = file_du_lieu.worksheet(cap_bau_cu)
@@ -111,8 +149,7 @@ else:
         st.stop()
 
     with st.form("Data_Entry_Form"):
-        st.markdown("#### Báo cáo số lượng cử tri đi bầu")
-        
+        st.markdown("#### 1. Báo cáo tiến độ cử tri")
         col1, col2, col3 = st.columns(3)
         with col1:
             tong_cu_tri = st.number_input("Tổng số (J)", min_value=0, step=1)
@@ -121,30 +158,59 @@ else:
         with col3:
             cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
         
+        st.divider()
+
+        st.markdown(f"#### 2. Kết quả kiểm phiếu ({don_vi_cua_to})")
+        
+        danh_sach_ung_cu_vien = DANH_SACH_DAI_BIEU[don_vi_cua_to]
+        ket_qua_phieu = {} # Từ điển lưu kết quả để chuẩn bị trỏ cột
+        
+        # Tự động sinh ô nhập liệu tương ứng với đại biểu
+        for dai_bieu in danh_sach_ung_cu_vien:
+            ket_qua_phieu[dai_bieu] = st.number_input(f"Số phiếu của: {dai_bieu}", min_value=0, step=1)
+        
         st.write("")
-        submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
+        submit_data = st.form_submit_button("Lưu & Gửi báo cáo toàn bộ", type="primary")
 
         if submit_data:
             if tong_cu_tri != (cu_tri_nam + cu_tri_nu):
                 st.error("⚠️ Lỗi logic: Tổng số cử tri không khớp với phép tính (Nam + Nữ).")
             elif tong_cu_tri == 0:
-                st.warning("⚠️ Số liệu đang bằng 0, vui lòng nhập số liệu trước khi gửi.")
+                st.warning("⚠️ Số liệu tổng cử tri đang bằng 0, vui lòng kiểm tra lại.")
             else:
-                with st.spinner("Đang truyền dữ liệu về máy chủ..."):
-                    du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
+                with st.spinner("Đang truyền dữ liệu về máy chủ phường..."):
                     hang_hien_tai = st.session_state['hang_cua_to']
-                    vung_cap_nhat = f"J{hang_hien_tai}:L{hang_hien_tai}"
+                    
+                    # TẠO GÓI DỮ LIỆU ĐỂ BẮN 1 LẦN DUY NHẤT LÊN GOOGLE SHEETS (Batch Update)
+                    goi_du_lieu = []
+                    
+                    # 1. Gói số liệu Cử tri (Trỏ vào J, K, L)
+                    goi_du_lieu.append({
+                        'range': f'J{hang_hien_tai}:L{hang_hien_tai}',
+                        'values': [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
+                    })
+                    
+                    # 2. Gói số liệu Phiếu đại biểu (Trỏ vào các cột tương ứng đã cấu hình)
+                    for dai_bieu, phieu in ket_qua_phieu.items():
+                        cot_tuong_ung = TOA_DO_DAI_BIEU.get(dai_bieu)
+                        if cot_tuong_ung:
+                            goi_du_lieu.append({
+                                'range': f'{cot_tuong_ung}{hang_hien_tai}',
+                                'values': [[phieu]]
+                            })
                     
                     try:
-                        sheet_target.update(vung_cap_nhat, du_lieu_cu_tri)
+                        # Thực thi lệnh bắn gói dữ liệu
+                        sheet_target.batch_update(goi_du_lieu)
                         time.sleep(0.5) 
-                        st.success(f"✅ Đã lưu thành công lên hệ thống tổng!")
+                        st.success(f"✅ Đã lưu thành công dữ liệu Cử tri và Số phiếu Đại biểu!")
                         st.balloons()
                     except Exception as e:
-                        st.error("❌ Lỗi đường truyền, vui lòng thử lại sau 1 phút.")
+                        st.error(f"❌ Lỗi đường truyền, vui lòng thử lại: {e}")
 
     if st.button("🔒 Đăng xuất an toàn"):
         st.session_state['logged_in'] = False
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
