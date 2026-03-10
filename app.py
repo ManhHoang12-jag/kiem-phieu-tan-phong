@@ -2,76 +2,85 @@ import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
+import time
 
 # ==========================================
-# 1. CẤU HÌNH KẾT NỐI TỚI GOOGLE SHEETS
+# 1. THIẾT LẬP GIAO DIỆN CHÍNH THỨC
 # ==========================================
-@st.cache_resource
+st.set_page_config(page_title="Hệ thống Bầu cử Tân Phong", page_icon="🇻🇳", layout="centered")
+
+# CSS Ẩn toàn bộ dấu vết của Streamlit và GitHub
+css_sach_se = """
+<style>
+    /* Ẩn Menu chính và Footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    /* Ẩn thanh Header trắng trên cùng */
+    header {visibility: hidden;}
+    /* Ẩn nút Deploy và Toolbar (Chứa con mèo) */
+    [data-testid="stAppDeployButton"] {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    /* Đẩy giao diện lên cao, giảm khoảng trống thừa */
+    .block-container {padding-top: 1rem !important; padding-bottom: 0rem !important;}
+    /* Tùy chỉnh màu nút bấm */
+    .stButton>button {width: 100%; font-weight: bold; border-radius: 5px;}
+</style>
+"""
+st.markdown(css_sach_se, unsafe_allow_html=True)
+
+# ==========================================
+# 2. CẤU HÌNH KẾT NỐI GOOGLE SHEETS
+# ==========================================
+@st.cache_resource(show_spinner=False)
 def init_connection():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    
-    # Đọc chìa khóa từ két sắt bảo mật của Streamlit thay vì đọc file .json trên máy
     creds_dict = json.loads(st.secrets["gcp_service_account"])
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    
     client = gspread.authorize(creds)
-    return client.open("Solieubaucutanphong") # Đảm bảo tên file đúng
+    return client.open("Solieubaucutanphong")
 
 try:
     file_du_lieu = init_connection()
 except Exception as e:
-    st.error(f"Lỗi kết nối tới cơ sở dữ liệu: {e}")
+    st.error(f"Lỗi kết nối máy chủ: {e}")
     st.stop()
 
 # ==========================================
-# 2. THIẾT LẬP GIAO DIỆN & TRẠNG THÁI
+# 3. TRẠNG THÁI & HÀNG MỎ NEO
 # ==========================================
-st.set_page_config(page_title="Hệ thống Báo cáo Bầu cử - Tân Phong", layout="centered")
-hide_streamlit_style = """
-            <style>
-            /* Ẩn thanh công cụ góc phải trên cùng (chứa con mèo) */
-            [data-testid="stToolbar"] {visibility: hidden !important;}
-            /* Ẩn menu Hamburger */
-            #MainMenu {visibility: hidden;}
-            /* Ẩn chữ "Made with Streamlit" ở dưới đáy */
-            footer {visibility: hidden;}
-            /* Ẩn dải màu trống trên cùng để giao diện đẩy lên cao hơn */
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-st.title("🗳️ Hệ thống Báo cáo Bầu cử - Tân Phong")
+HANG_MO_NEO = 6 # Tổ 1 bắt đầu từ hàng 6
+URL_QUOC_HUY = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Coat_of_arms_of_Vietnam.svg/1024px-Coat_of_arms_of_Vietnam.svg.png"
 
-# Khởi tạo bộ nhớ tạm để giữ trạng thái đăng nhập
 if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
-# --- THIẾT LẬP HÀNG MỎ NEO ---
-HANG_MO_NEO = 6 # Tổ 1 bắt đầu từ hàng số 6 trên Google Sheets
+# --- HEADER QUỐC HUY ---
+col_logo, col_title = st.columns([1, 5])
+with col_logo:
+    st.image(URL_QUOC_HUY, width=90)
+with col_title:
+    st.markdown("<h3 style='text-align: left; color: #cc0000; margin-bottom: 0px;'>ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>", unsafe_allow_html=True)
+    st.markdown("<h5 style='text-align: left; color: #333333; margin-top: 5px;'>Cổng Nhập liệu Bầu cử Trực tuyến</h5>", unsafe_allow_html=True)
+st.divider()
 
 # ==========================================
-# 3. MÀN HÌNH ĐĂNG NHẬP DÀNH CHO CÁC TỔ
+# 4. KHU VỰC ĐĂNG NHẬP
 # ==========================================
 if not st.session_state['logged_in']:
+    st.markdown("#### Xác thực cán bộ Tổ bầu cử")
     with st.form("Login_Form"):
-        st.subheader("Đăng nhập phân quyền")
-        
-        # Tự động tạo danh sách từ Tổ 1 đến Tổ 46
         danh_sach_to = [f"Tổ {i}" for i in range(1, 47)]
-        user_choice = st.selectbox("Chọn đơn vị của bạn", danh_sach_to)
-        password_input = st.text_input("Mật khẩu xác thực", type="password")
+        user_choice = st.selectbox("Chọn đơn vị công tác:", danh_sach_to)
+        password_input = st.text_input("Mã bảo mật:", type="password")
         
-        submit_login = st.form_submit_button("Xác nhận đăng nhập")
+        submit_login = st.form_submit_button("Đăng nhập hệ thống", type="primary")
 
         if submit_login:
-            # Tách lấy số thứ tự (Ví dụ: "Tổ 2" -> Lấy số 2)
             so_thu_tu_to = int(user_choice.replace("Tổ ", ""))
-            
-            # Tính toán hàng thực tế: Hàng = Mỏ neo + (STT - 1)
             hang_thuc_te = HANG_MO_NEO + (so_thu_tu_to - 1)
             
             try:
-                # Đọc mật khẩu từ Cột B (Cột 2) của sheet "Quoc Hoi" để đối chiếu
                 sheet_check = file_du_lieu.worksheet("Quoc Hoi")
                 mat_khau_he_thong = sheet_check.cell(hang_thuc_te, 2).value 
                 
@@ -79,68 +88,62 @@ if not st.session_state['logged_in']:
                     st.session_state['logged_in'] = True
                     st.session_state['ten_to'] = user_choice
                     st.session_state['hang_cua_to'] = hang_thuc_te
-                    st.rerun() # Tải lại trang để vào giao diện chính
+                    st.rerun()
                 else:
-                    st.error("Sai mật khẩu! Vui lòng kiểm tra lại.")
+                    st.error("❌ Mã bảo mật không chính xác!")
             except Exception as e:
-                st.error(f"Lỗi khi đọc mật khẩu từ hệ thống: {e}")
+                st.error(f"Lỗi truy xuất hệ thống: {e}")
 
 # ==========================================
-# 4. MÀN HÌNH NHẬP LIỆU BÁO CÁO CỬ TRI
+# 5. KHU VỰC NHẬP LIỆU CHÍNH THỨC
 # ==========================================
 else:
-    st.success(f"Chào mừng đại diện **{st.session_state['ten_to']}**!")
-    st.info(f"📍 Dữ liệu của bạn sẽ được trỏ chính xác vào **Hàng số {st.session_state['hang_cua_to']}** trên hệ thống.")
+    st.info(f"👤 Đang thao tác: **{st.session_state['ten_to']}** | 📍 Vị trí lưu trữ: **Hàng {st.session_state['hang_cua_to']}**")
 
-    # Menu chọn Cấp bầu cử
-    cap_bau_cu = st.selectbox(
-        "Vui lòng chọn cấp bầu cử bạn muốn báo cáo:", 
-        ["Quoc Hoi", "HDND Tinh", "HDND Huyen", "HDND Xa"]
-    )
-
+    # Chỉ định mặc định trỏ vào sheet Quốc Hội
+    cap_bau_cu = "Quoc Hoi" 
     try:
-        sheet_hien_tai = file_du_lieu.worksheet(cap_bau_cu)
-    except gspread.exceptions.WorksheetNotFound:
-        st.error(f"Lỗi: Không tìm thấy trang tính '{cap_bau_cu}'. Vui lòng tạo đúng tên trang tính trên Google Sheets.")
+        sheet_target = file_du_lieu.worksheet(cap_bau_cu)
+    except:
+        st.error("Không tìm thấy dữ liệu cấp Quốc Hội.")
         st.stop()
 
-    # Form nhập liệu chính
     with st.form("Data_Entry_Form"):
-        st.write("### Cập nhật tiến độ cử tri đi bầu")
+        st.markdown("#### Báo cáo số lượng cử tri đi bầu")
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            tong_cu_tri = st.number_input("Tổng số cử tri (Ô J)", min_value=0, step=1)
+            tong_cu_tri = st.number_input("Tổng số (J)", min_value=0, step=1)
         with col2:
-            cu_tri_nam = st.number_input("Cử tri Nam (Ô K)", min_value=0, step=1)
+            cu_tri_nam = st.number_input("Nam (K)", min_value=0, step=1)
         with col3:
-            cu_tri_nu = st.number_input("Cử tri Nữ (Ô L)", min_value=0, step=1)
+            cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
         
-        submit_data = st.form_submit_button("Lưu số liệu", type="primary")
+        st.write("") # Tạo khoảng trống
+        submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
 
         if submit_data:
-            # --- KIỂM TRA CHÉO LOGIC ---
             if tong_cu_tri != (cu_tri_nam + cu_tri_nu):
-                st.error("⚠️ Lỗi dữ liệu: Tổng số cử tri không khớp với phép tính (Nam + Nữ). Vui lòng kiểm tra lại!")
+                st.error("⚠️ Lỗi logic: Tổng số cử tri không khớp với phép tính (Nam + Nữ).")
+            elif tong_cu_tri == 0:
+                st.warning("⚠️ Số liệu đang bằng 0, vui lòng nhập số liệu trước khi gửi.")
             else:
-                # Nếu số liệu logic, tiến hành gom mảng để bắn lên Google Sheets
-                du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
-                
-                hang_hien_tai = st.session_state['hang_cua_to']
-                # Tạo tọa độ động (Ví dụ: J6:L6, J7:L7...)
-                vung_cap_nhat = f"J{hang_hien_tai}:L{hang_hien_tai}"
-                
-                try:
-                    sheet_hien_tai.update(vung_cap_nhat, du_lieu_cu_tri)
-                    st.balloons()
-                    st.success(f"✅ Đã trỏ thành công số liệu vào tọa độ **{vung_cap_nhat}** của cấp {cap_bau_cu}!")
-                except Exception as e:
-                    st.error(f"Lỗi đường truyền khi lưu dữ liệu: {e}")
+                # Tạo hiệu ứng vòng quay chờ đợi (chống spam click)
+                with st.spinner("Đang truyền dữ liệu về máy chủ phường..."):
+                    du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
+                    hang_hien_tai = st.session_state['hang_cua_to']
+                    vung_cap_nhat = f"J{hang_hien_tai}:L{hang_hien_tai}"
+                    
+                    try:
+                        sheet_target.update(vung_cap_nhat, du_lieu_cu_tri)
+                        time.sleep(0.5) # Tạo độ trễ nhỏ để Google API xử lý mượt hơn
+                        st.success(f"✅ Đã lưu thành công lên hệ thống tổng!")
+                        st.balloons()
+                    except Exception as e:
+                        st.error("❌ Lỗi đường truyền, vui lòng thử lại sau 1 phút.")
 
-    # Nút đăng xuất an toàn
-    st.divider()
-    if st.button("Đăng xuất"):
+    if st.button("🔒 Đăng xuất an toàn"):
         st.session_state['logged_in'] = False
-
         st.rerun()
-
+        
+    st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
