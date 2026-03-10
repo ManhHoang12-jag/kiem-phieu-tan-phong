@@ -3,42 +3,25 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
 import time
+import base64
+import os
 
 # ==========================================
 # 1. THIẾT LẬP GIAO DIỆN CHÍNH THỨC
 # ==========================================
 st.set_page_config(page_title="Hệ thống Báo cáo Bầu cử phường Tân Phong", page_icon="🇻🇳", layout="centered")
 
-# CSS Hủy diệt: Xóa rác giao diện triệt để nhất có thể cho bản miễn phí
 css_sach_se = """
 <style>
-    /* Ẩn Header, Footer, Menu của Streamlit */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     header {visibility: hidden !important; display: none !important;}
-    
-    /* Ẩn triệt để nút Deploy và Toolbar */
     .stAppDeployButton {display: none !important;}
     [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
     [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
-    
-    /* Ẩn các watermark/badge khác */
-    .viewerBadge_container__1QSob {display: none !important;}
-    .viewerBadge_link__1S137 {display: none !important;}
-    
-    /* Tối ưu không gian hiển thị trên điện thoại */
-    .block-container {
-        padding-top: 1.5rem !important; 
-        padding-bottom: 1rem !important;
-        max-width: 800px;
-    }
-    
-    /* Làm đẹp form và nút bấm */
-    .stButton>button {
-        width: 100%; 
-        font-weight: bold; 
-        border-radius: 8px;
-    }
+    .viewerBadge_container__1QSob, .viewerBadge_link__1S137 {display: none !important;}
+    .block-container {padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 800px;}
+    .stButton>button {width: 100%; font-weight: bold; border-radius: 8px;}
 </style>
 """
 st.markdown(css_sach_se, unsafe_allow_html=True)
@@ -68,14 +51,24 @@ HANG_MO_NEO = 6
 if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
-# --- HEADER QUỐC HUY: ÉP THÀNH 1 DÒNG ĐỂ TRÁNH LỖI HIỂN THỊ CODE ---
-header_html = """<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;"><img src="https://hochiminhcity.gov.vn/documents/10180/2824707/logo.png" width="75" style="margin-right: 15px; flex-shrink: 0;"><div style="flex-grow: 1; overflow: hidden;"><h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3><h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5></div></div>"""
+# ==========================================
+# 4. HEADER QUỐC HUY (CÔNG NGHỆ BASE64 VƯỢT TƯỜNG LỬA)
+# ==========================================
+# Hệ thống sẽ tìm file logo.png bạn đã tải lên GitHub và biến nó thành mã nội bộ
+if os.path.exists("logo.png"):
+    with open("logo.png", "rb") as f:
+        encoded_img = base64.b64encode(f.read()).decode()
+    img_src = f"data:image/png;base64,{encoded_img}"
+else:
+    # Nếu bạn quên chưa tải logo.png, nó sẽ dùng hình Cờ Việt Nam tạm thời
+    img_src = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/200px-Flag_of_Vietnam.svg.png"
 
-st.markdown(header_html, unsafe_allow_html=True)
+header_html = f"""<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;"><img src="{img_src}" width="75" style="margin-right: 15px; flex-shrink: 0;"><div style="flex-grow: 1; overflow: hidden;"><h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3><h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5></div></div>"""
+
 st.markdown(header_html, unsafe_allow_html=True)
 
 # ==========================================
-# 4. KHU VỰC ĐĂNG NHẬP
+# 5. KHU VỰC ĐĂNG NHẬP
 # ==========================================
 if not st.session_state['logged_in']:
     st.markdown("#### Xác thực cán bộ Tổ bầu cử")
@@ -105,12 +98,11 @@ if not st.session_state['logged_in']:
                 st.error(f"Lỗi truy xuất hệ thống: {e}")
 
 # ==========================================
-# 5. KHU VỰC NHẬP LIỆU CHÍNH THỨC
+# 6. KHU VỰC NHẬP LIỆU CHÍNH THỨC
 # ==========================================
 else:
     st.info(f"👤 Đang thao tác: **{st.session_state['ten_to']}** | 📍 Vị trí lưu trữ: **Hàng {st.session_state['hang_cua_to']}**")
 
-    # Chỉ định mặc định trỏ vào sheet Quốc Hội
     cap_bau_cu = "Quoc Hoi" 
     try:
         sheet_target = file_du_lieu.worksheet(cap_bau_cu)
@@ -129,7 +121,7 @@ else:
         with col3:
             cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
         
-        st.write("") # Tạo khoảng trống
+        st.write("")
         submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
 
         if submit_data:
@@ -138,7 +130,6 @@ else:
             elif tong_cu_tri == 0:
                 st.warning("⚠️ Số liệu đang bằng 0, vui lòng nhập số liệu trước khi gửi.")
             else:
-                # Tạo hiệu ứng vòng quay chờ đợi (chống spam click)
                 with st.spinner("Đang truyền dữ liệu về máy chủ..."):
                     du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
                     hang_hien_tai = st.session_state['hang_cua_to']
@@ -156,5 +147,4 @@ else:
         st.session_state['logged_in'] = False
         st.rerun()
         
-    st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong, TP. Lai Châu</div>", unsafe_allow_html=True)
-
+    st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
