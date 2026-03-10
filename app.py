@@ -9,25 +9,36 @@ import time
 # ==========================================
 st.set_page_config(page_title="Hệ thống Báo cáo Bầu cử phường Tân Phong", page_icon="🇻🇳", layout="centered")
 
-# Bộ CSS mạnh nhất để ẩn giao diện thừa
+# CSS Hủy diệt: Xóa rác giao diện triệt để nhất có thể cho bản miễn phí
 css_sach_se = """
 <style>
-    /* Ẩn Header, Footer, Menu */
-    #MainMenu {visibility: hidden !important;}
-    footer {visibility: hidden !important;}
-    header {visibility: hidden !important;}
+    /* Ẩn Header, Footer, Menu của Streamlit */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    header {visibility: hidden !important; display: none !important;}
     
-    /* Ẩn các nút công cụ của Streamlit */
+    /* Ẩn triệt để nút Deploy và Toolbar */
+    .stAppDeployButton {display: none !important;}
     [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
     [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
     
-    /* Ép ẩn các thẻ biểu tượng ngoài lề nếu có thể */
+    /* Ẩn các watermark/badge khác */
     .viewerBadge_container__1QSob {display: none !important;}
     .viewerBadge_link__1S137 {display: none !important;}
     
-    /* Căn chỉnh lại khoảng trống */
-    .block-container {padding-top: 2rem !important; padding-bottom: 0rem !important;}
-    .stButton>button {width: 100%; font-weight: bold; border-radius: 5px;}
+    /* Tối ưu không gian hiển thị trên điện thoại */
+    .block-container {
+        padding-top: 1.5rem !important; 
+        padding-bottom: 1rem !important;
+        max-width: 800px;
+    }
+    
+    /* Làm đẹp form và nút bấm */
+    .stButton>button {
+        width: 100%; 
+        font-weight: bold; 
+        border-radius: 8px;
+    }
 </style>
 """
 st.markdown(css_sach_se, unsafe_allow_html=True)
@@ -57,14 +68,14 @@ HANG_MO_NEO = 6
 if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
-# --- HEADER QUỐC HUY SỬ DỤNG ẢNH TRỰC TIẾP ---
+# --- HEADER QUỐC HUY: CĂN CHỈNH 1 HÀNG & ẢNH CHỐNG CHẶN ---
 header_html = """
 <div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Coat_of_arms_of_Vietnam.svg/200px-Coat_of_arms_of_Vietnam.svg.png" width="75" style="margin-right: 15px; flex-shrink: 0;">
+    <img src="https://hochiminhcity.gov.vn/documents/10180/2824707/logo.png" width="75" style="margin-right: 15px; flex-shrink: 0;">
     
     <div style="flex-grow: 1; overflow: hidden;">
-        <h3 style="margin: 0; color: #cc0000; font-size: 19px; white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>
-        <h5 style="margin: 0; color: #333333; font-size: 15px; margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5>
+        <h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>
+        <h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5>
     </div>
 </div>
 """
@@ -119,11 +130,11 @@ else:
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            tong_cu_tri = st.number_input("Tổng số", min_value=0, step=1)
+            tong_cu_tri = st.number_input("Tổng số (J)", min_value=0, step=1)
         with col2:
-            cu_tri_nam = st.number_input("Nam", min_value=0, step=1)
+            cu_tri_nam = st.number_input("Nam (K)", min_value=0, step=1)
         with col3:
-            cu_tri_nu = st.number_input("Nữ", min_value=0, step=1)
+            cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
         
         st.write("") # Tạo khoảng trống
         submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
@@ -135,14 +146,14 @@ else:
                 st.warning("⚠️ Số liệu đang bằng 0, vui lòng nhập số liệu trước khi gửi.")
             else:
                 # Tạo hiệu ứng vòng quay chờ đợi (chống spam click)
-                with st.spinner("Đang truyền dữ liệu về máy chủ phường..."):
+                with st.spinner("Đang truyền dữ liệu về máy chủ..."):
                     du_lieu_cu_tri = [[tong_cu_tri, cu_tri_nam, cu_tri_nu]]
                     hang_hien_tai = st.session_state['hang_cua_to']
                     vung_cap_nhat = f"J{hang_hien_tai}:L{hang_hien_tai}"
                     
                     try:
                         sheet_target.update(vung_cap_nhat, du_lieu_cu_tri)
-                        time.sleep(0.5) # Tạo độ trễ nhỏ để Google API xử lý mượt hơn
+                        time.sleep(0.5) 
                         st.success(f"✅ Đã lưu thành công lên hệ thống tổng!")
                         st.balloons()
                     except Exception as e:
@@ -152,8 +163,4 @@ else:
         st.session_state['logged_in'] = False
         st.rerun()
         
-    st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
-
-
-
-
+    st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong, TP. Lai Châu</div>", unsafe_allow_html=True)
