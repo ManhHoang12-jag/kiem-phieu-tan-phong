@@ -100,24 +100,55 @@ if not st.session_state['logged_in']:
 # ==========================================
 # ==========================================
 # ==========================================
-# 6. PHẦN NHẬP LIỆU ĐA CẤP (QUỐC HỘI, HĐND TỈNH, HĐND PHƯỜNG)
+# 6. PHẦN NHẬP LIỆU ĐA CẤP (LOGIC CHUẨN NGHIỆP VỤ)
 # ==========================================
 else:
     st.info(f"👤 Tổ đang thao tác: **{st.session_state['ten_to']}** | 📍 Hàng lưu trữ: **{st.session_state['hang_cua_to']}**")
 
-    DANH_SACH_DAI_BIEU = {
-        "Quốc hội": ["Đại biểu Quốc Hội A", "Đại biểu Quốc Hội B"],
-        "HĐND tỉnh": ["Đại biểu Tỉnh C", "Đại biểu Tỉnh D"],
-        "HĐND phường": ["Đại biểu Phường E", "Đại biểu Phường F"]
+    # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ (CẤP PHƯỜNG) ---
+    # Bạn hãy tự chỉnh lại các con số này cho khớp với Quyết định phê duyệt của phường nhé:
+    PHAN_BO_PHUONG = {}
+    for i in range(1, 48):
+        if i <= 7: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 1"
+        elif i <= 14: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 2"
+        elif i <= 21: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 3"
+        elif i <= 28: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 4"
+        elif i <= 35: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 5"
+        elif i <= 42: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 6"
+        else: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 7"
+    
+    don_vi_phuong_cua_to = PHAN_BO_PHUONG.get(st.session_state['ten_to'], "Đơn vị 1")
+
+    # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
+    # Cấp Quốc hội & Tỉnh (Cố định cho mọi Tổ)
+    DS_QUOC_HOI = ["Đại biểu QH 1", "Đại biểu QH 2", "Đại biểu QH 3"]
+    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
+    
+    # Cấp Phường (Thay đổi theo 7 Đơn vị)
+    DS_PHUONG = {
+        "Đơn vị 1": ["Đại biểu P1_A", "Đại biểu P1_B", "Đại biểu P1_C"],
+        "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
+        "Đơn vị 3": ["Đại biểu P3_A", "Đại biểu P3_B", "Đại biểu P3_C"],
+        "Đơn vị 4": ["Đại biểu P4_A", "Đại biểu P4_B"],
+        "Đơn vị 5": ["Đại biểu P5_A", "Đại biểu P5_B"],
+        "Đơn vị 6": ["Đại biểu P6_A", "Đại biểu P6_B"],
+        "Đơn vị 7": ["Đại biểu P7_A", "Đại biểu P7_B", "Đại biểu P7_C"]
     }
 
+    # --- 3. BẢN ĐỒ TRỎ CỘT ĐÍCH DANH TRÊN GOOGLE SHEETS ---
     MAP_COT_DAI_BIEU = {
-        "Đại biểu Quốc Hội A": "AA",
-        "Đại biểu Quốc Hội B": "AB",
-        "Đại biểu Tỉnh C": "AA",
-        "Đại biểu Tỉnh D": "AB",
-        "Đại biểu Phường E": "AA",
-        "Đại biểu Phường F": "AB"
+        "Đại biểu QH 1": "AA", "Đại biểu QH 2": "AB", "Đại biểu QH 3": "AC",
+        "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC",
+        
+        # Lưu ý: Các đại biểu phường dù khác tên nhưng vẫn trỏ chung vào AA, AB, AC... 
+        # vì dữ liệu của họ sẽ chạy vào các hàng khác nhau trên Sheet HĐND Phường
+        "Đại biểu P1_A": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
+        "Đại biểu P2_A": "AA", "Đại biểu P2_B": "AB",
+        "Đại biểu P3_A": "AA", "Đại biểu P3_B": "AB", "Đại biểu P3_C": "AC",
+        "Đại biểu P4_A": "AA", "Đại biểu P4_B": "AB",
+        "Đại biểu P5_A": "AA", "Đại biểu P5_B": "AB",
+        "Đại biểu P6_A": "AA", "Đại biểu P6_B": "AB",
+        "Đại biểu P7_A": "AA", "Đại biểu P7_B": "AB", "Đại biểu P7_C": "AC"
     }
 
     MAP_SHEET = {
@@ -126,13 +157,25 @@ else:
         "HĐND phường": "HDND Phuong"
     }
 
-    # --- GIẢI PHÁP: ĐƯA THANH CHỌN RA NGOÀI FORM ---
+    # --- CHỌN CẤP BẦU CỬ (ĐẶT NGOÀI FORM) ---
     st.markdown("#### 📌 BƯỚC 1: CHỌN CẤP BẦU CỬ")
-    cap_bau_cu = st.selectbox("Chọn cấp để nhập liệu:", ["Quốc hội", "HĐND tỉnh", "HĐND phường"])
+    cap_bau_cu = st.selectbox("Chọn cấp để báo cáo:", ["Quốc hội", "HĐND tỉnh", "HĐND phường"])
     
+    # Logic xác định danh sách đại biểu
+    if cap_bau_cu == "Quốc hội":
+        danh_sach_hien_tai = DS_QUOC_HOI
+        thong_bao = "Toàn phường"
+    elif cap_bau_cu == "HĐND tỉnh":
+        danh_sach_hien_tai = DS_TINH
+        thong_bao = "Toàn phường"
+    else:
+        danh_sach_hien_tai = DS_PHUONG[don_vi_phuong_cua_to]
+        thong_bao = f"Khu vực: {don_vi_phuong_cua_to}"
+        
+    st.info(f"🔎 Bạn đang nhập liệu cho: **{cap_bau_cu}** ({thong_bao})")
     st.divider()
 
-    # --- FORM NHẬP LIỆU CHỈ BẮT ĐẦU TỪ BƯỚC 2 ---
+    # --- FORM NHẬP LIỆU ---
     with st.form("Form_Nhap_Lieu"):
         st.markdown("#### 📊 BƯỚC 2: TIẾN ĐỘ CỬ TRI")
         c1, c2, c3 = st.columns(3)
@@ -147,22 +190,16 @@ else:
         with c6: p_hop = st.number_input("Hợp lệ (O)", min_value=0, step=1)
         with c7: p_khong = st.number_input("K.Hợp lệ (P)", min_value=0, step=1)
         
-        # Tiêu đề và danh sách sẽ tự động nhảy đúng theo cấp đã chọn ở trên
-        st.markdown(f"#### 🏆 BƯỚC 4: KẾT QUẢ KIỂM PHIẾU ({cap_bau_cu.upper()})")
-        
-        danh_sach_hien_tai = DANH_SACH_DAI_BIEU[cap_bau_cu]
+        st.markdown(f"#### 🏆 BƯỚC 4: KẾT QUẢ KIỂM PHIẾU")
         kq_db = {}
         for db in danh_sach_hien_tai:
             kq_db[db] = st.number_input(f"Số phiếu của: {db}", min_value=0, step=1)
             
         if st.form_submit_button("LƯU & GỬI BÁO CÁO", type="primary"):
-            if t_ct != (n_ct + nu_ct):
-                st.error("❌ Lỗi: Tổng cử tri không khớp phép tính (Nam + Nữ)!")
-            elif p_thu != (p_hop + p_khong):
-                st.error("❌ Lỗi: Phiếu thu vào không khớp (Hợp lệ + Không hợp lệ)!")
+            if t_ct != (n_ct + nu_ct) or p_thu != (p_hop + p_khong):
+                st.error("❌ Lỗi logic toán học (Cử tri hoặc Số phiếu không khớp)!")
             else:
                 sheet_name = MAP_SHEET[cap_bau_cu]
-                
                 with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}'..."):
                     h = st.session_state['hang_cua_to']
                     updates = []
@@ -176,8 +213,7 @@ else:
                             updates.append({'range': f'{col_letter}{h}', 'values': [[val]]})
                     
                     try:
-                        sheet_target = file_du_lieu.worksheet(sheet_name)
-                        sheet_target.batch_update(updates)
+                        file_du_lieu.worksheet(sheet_name).batch_update(updates)
                         st.success(f"✅ Đã lưu báo cáo cấp {cap_bau_cu} thành công!")
                         st.balloons()
                     except Exception as e:
@@ -188,6 +224,7 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
