@@ -73,7 +73,7 @@ st.markdown(header_html, unsafe_allow_html=True)
 if not st.session_state['logged_in']:
     st.markdown("#### Xác thực cán bộ Tổ bầu cử")
     with st.form("Login_Form"):
-        danh_sach_to = [f"Tổ {i}" for i in range(1, 47)]
+        danh_sach_to = [f"Tổ {i}" for i in range(1, 48)]
         user_choice = st.selectbox("Chọn đơn vị công tác:", danh_sach_to)
         password_input = st.text_input("Mã bảo mật:", type="password")
         
@@ -100,33 +100,35 @@ if not st.session_state['logged_in']:
 # ==========================================
 # ==========================================
 # ==========================================
-# 6. PHẦN NHẬP LIỆU ĐA CẤP (LOGIC CHUẨN NGHIỆP VỤ)
+# 6. PHẦN NHẬP LIỆU ĐA CẤP (PHÂN BỔ THỦ CÔNG)
 # ==========================================
 else:
     st.info(f"👤 Tổ đang thao tác: **{st.session_state['ten_to']}** | 📍 Hàng lưu trữ: **{st.session_state['hang_cua_to']}**")
 
-    # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ (CẤP PHƯỜNG) ---
-    # Bạn hãy tự chỉnh lại các con số này cho khớp với Quyết định phê duyệt của phường nhé:
-    PHAN_BO_PHUONG = {}
-    for i in range(1, 48):
-        if i <= 7: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 1"
-        elif i <= 14: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 2"
-        elif i <= 21: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 3"
-        elif i <= 28: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 4"
-        elif i <= 35: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 5"
-        elif i <= 42: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 6"
-        else: PHAN_BO_PHUONG[f"Tổ {i}"] = "Đơn vị 7"
+    # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ CẤP PHƯỜNG (NHẬP THỦ CÔNG) ---
+    # Bạn hãy xóa tên Đơn vị cũ và gõ lại tên Đơn vị thực tế vào giữa 2 dấu ngoặc kép.
+    # Lưu ý: Tuyệt đối không xóa dấu phẩy (,) ở cuối mỗi cụm.
+    PHAN_BO_PHUONG = {
+        "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1", "Tổ 7": "Đơn vị 1",
+        "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 2", "Tổ 14": "Đơn vị 1",
+        "Tổ 15": "Đơn vị 3", "Tổ 16": "Đơn vị 3", "Tổ 17": "Đơn vị 3", "Tổ 18": "Đơn vị 3", "Tổ 19": "Đơn vị 3", "Tổ 20": "Đơn vị 3", "Tổ 21": "Đơn vị 3",
+        "Tổ 22": "Đơn vị 4", "Tổ 23": "Đơn vị 4", "Tổ 24": "Đơn vị 4", "Tổ 25": "Đơn vị 4", "Tổ 26": "Đơn vị 4", "Tổ 27": "Đơn vị 4", "Tổ 28": "Đơn vị 4",
+        "Tổ 29": "Đơn vị 5", "Tổ 30": "Đơn vị 5", "Tổ 31": "Đơn vị 5", "Tổ 32": "Đơn vị 5", "Tổ 33": "Đơn vị 5", "Tổ 34": "Đơn vị 5", "Tổ 35": "Đơn vị 5",
+        "Tổ 36": "Đơn vị 6", "Tổ 37": "Đơn vị 6", "Tổ 38": "Đơn vị 6", "Tổ 39": "Đơn vị 6", "Tổ 40": "Đơn vị 6", "Tổ 41": "Đơn vị 6", "Tổ 42": "Đơn vị 6",
+        "Tổ 43": "Đơn vị 7", "Tổ 44": "Đơn vị 7", "Tổ 45": "Đơn vị 7", "Tổ 46": "Đơn vị 7", "Tổ 47": "Đơn vị 7"
+    }
     
-    don_vi_phuong_cua_to = PHAN_BO_PHUONG.get(st.session_state['ten_to'], "Đơn vị 1")
+    # Lấy ra tên Đơn vị của Tổ đang đăng nhập (Nếu quên chưa khai báo sẽ báo lỗi)
+    don_vi_phuong_cua_to = PHAN_BO_PHUONG.get(st.session_state['ten_to'], "Chưa có đơn vị")
 
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
-    # Cấp Quốc hội & Tỉnh (Cố định cho mọi Tổ)
-    DS_QUOC_HOI = ["Đoàn Thị C", "Đại biểu QH 2", "Đại biểu QH 3", "Trần Văn Bê", "Hà Thị G"]
-    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3", "Đại Biểu Tỉnh 5"]
+    # Cấp Quốc hội & Tỉnh (Dùng chung cho cả 47 Tổ)
+    DS_QUOC_HOI = ["Vừ Thị Mai Dinh", "Vũ Minh Đạo", "Sùng A Hồ", "Vì Thị Ngoan", "Cà Thị Thắm"]
+    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
     
-    # Cấp Phường (Thay đổi theo 7 Đơn vị)
+    # Cấp Phường (7 Đơn vị có 7 danh sách khác nhau)
     DS_PHUONG = {
-        "Đơn vị 1": ["Đại biểu P1_A", "Đại biểu P1_B", "Đại biểu P1_C", "Nguyễn Trung C", "Đàm Đức Hiếu"],
+        "Đơn vị 1": ["Lê Xuân Dũng", "Đại biểu P1_B", "Đại biểu P1_C"],
         "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
         "Đơn vị 3": ["Đại biểu P3_A", "Đại biểu P3_B", "Đại biểu P3_C"],
         "Đơn vị 4": ["Đại biểu P4_A", "Đại biểu P4_B"],
@@ -135,13 +137,11 @@ else:
         "Đơn vị 7": ["Đại biểu P7_A", "Đại biểu P7_B", "Đại biểu P7_C"]
     }
 
-    # --- 3. BẢN ĐỒ TRỎ CỘT ĐÍCH DANH TRÊN GOOGLE SHEETS ---
+    # --- 3. BẢN ĐỒ TRỎ CỘT TRÊN GOOGLE SHEETS ---
     MAP_COT_DAI_BIEU = {
-        "Đoàn Thị C": "AA", "Đại biểu QH 2": "AB", "Đại biểu QH 3": "AC",
+        "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", "Vì Thị Ngoan": "AG", "Cà Thị Thắm": "AI"
         "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC",
         
-        # Lưu ý: Các đại biểu phường dù khác tên nhưng vẫn trỏ chung vào AA, AB, AC... 
-        # vì dữ liệu của họ sẽ chạy vào các hàng khác nhau trên Sheet HĐND Phường
         "Đại biểu P1_A": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
         "Đại biểu P2_A": "AA", "Đại biểu P2_B": "AB",
         "Đại biểu P3_A": "AA", "Đại biểu P3_B": "AB", "Đại biểu P3_C": "AC",
@@ -157,11 +157,10 @@ else:
         "HĐND phường": "HDND Phuong"
     }
 
-    # --- CHỌN CẤP BẦU CỬ (ĐẶT NGOÀI FORM) ---
-    st.markdown("#### 📌 BƯỚC 1: CHỌN CẤP BẦU CỬ")
+    # --- CHỌN CẤP BẦU CỬ ---
+    st.markdown("#### BƯỚC 1: CHỌN CẤP BẦU CỬ")
     cap_bau_cu = st.selectbox("Chọn cấp để báo cáo:", ["Quốc hội", "HĐND tỉnh", "HĐND phường"])
     
-    # Logic xác định danh sách đại biểu
     if cap_bau_cu == "Quốc hội":
         danh_sach_hien_tai = DS_QUOC_HOI
         thong_bao = "Toàn phường"
@@ -169,28 +168,33 @@ else:
         danh_sach_hien_tai = DS_TINH
         thong_bao = "Toàn phường"
     else:
+        # Nếu đang nhập cho phường mà lỡ quên chưa gán đơn vị cho Tổ thì dừng lại báo lỗi
+        if don_vi_phuong_cua_to == "Chưa có đơn vị":
+            st.error("⚠️ Lỗi: Hệ thống chưa được cấu hình Đơn vị bầu cử cho Tổ này. Vui lòng liên hệ quản trị viên!")
+            st.stop()
+            
         danh_sach_hien_tai = DS_PHUONG[don_vi_phuong_cua_to]
         thong_bao = f"Khu vực: {don_vi_phuong_cua_to}"
         
-    st.info(f"🔎 Bạn đang nhập liệu cho: **{cap_bau_cu}** ({thong_bao})")
+    st.info(f"🔎 Đang nhập liệu cho: **{cap_bau_cu}** ({thong_bao})")
     st.divider()
 
-    # --- FORM NHẬP LIỆU ---
+    # --- FORM NHẬP LIỆU CHÍNH THỨC ---
     with st.form("Form_Nhap_Lieu"):
-        st.markdown("#### 📊 BƯỚC 2: TIẾN ĐỘ CỬ TRI")
+        st.markdown("#### BƯỚC 2: TIẾN ĐỘ CỬ TRI")
         c1, c2, c3 = st.columns(3)
         with c1: t_ct = st.number_input("Tổng cử tri (J)", min_value=0, step=1)
         with c2: n_ct = st.number_input("Nam (K)", min_value=0, step=1)
         with c3: nu_ct = st.number_input("Nữ (L)", min_value=0, step=1)
         
-        st.markdown("#### 📝 BƯỚC 3: QUẢN LÝ PHIẾU")
+        st.markdown("#### BƯỚC 3: QUẢN LÝ PHIẾU")
         c4, c5, c6, c7 = st.columns(4)
         with c4: p_phat = st.number_input("Phát ra (M)", min_value=0, step=1)
         with c5: p_thu = st.number_input("Thu vào (N)", min_value=0, step=1)
         with c6: p_hop = st.number_input("Hợp lệ (O)", min_value=0, step=1)
         with c7: p_khong = st.number_input("K.Hợp lệ (P)", min_value=0, step=1)
         
-        st.markdown(f"#### 🏆 BƯỚC 4: KẾT QUẢ KIỂM PHIẾU")
+        st.markdown(f"#### BƯỚC 4: KẾT QUẢ KIỂM PHIẾU")
         kq_db = {}
         for db in danh_sach_hien_tai:
             kq_db[db] = st.number_input(f"Số phiếu của: {db}", min_value=0, step=1)
@@ -224,6 +228,7 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
