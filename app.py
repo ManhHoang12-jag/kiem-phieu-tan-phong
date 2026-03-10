@@ -1,6 +1,7 @@
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 
 # ==========================================
 # 1. CẤU HÌNH KẾT NỐI TỚI GOOGLE SHEETS
@@ -127,4 +128,5 @@ else:
     st.divider()
     if st.button("Đăng xuất"):
         st.session_state['logged_in'] = False
+
         st.rerun()
