@@ -97,7 +97,7 @@ if not st.session_state['logged_in']:
             except Exception as e:
                 st.error(f"Lỗi truy xuất hệ thống: {e}")
                 
-                st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+             
 
 # ==========================================
 # ==========================================
@@ -123,12 +123,12 @@ else:
 
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
     # Cấp Quốc hội & Tỉnh (Cố định cho mọi Tổ)
-    DS_QUOC_HOI = ["Đại biểu QH 1", "Đại biểu QH 2", "Đại biểu QH 3"]
-    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
+    DS_QUOC_HOI = ["Đoàn Thị C", "Đại biểu QH 2", "Đại biểu QH 3", "Trần Văn Bê", "Hà Thị G"]
+    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3", "Đại Biểu Tỉnh 5"]
     
     # Cấp Phường (Thay đổi theo 7 Đơn vị)
     DS_PHUONG = {
-        "Đơn vị 1": ["Đại biểu P1_A", "Đại biểu P1_B", "Đại biểu P1_C"],
+        "Đơn vị 1": ["Đại biểu P1_A", "Đại biểu P1_B", "Đại biểu P1_C", "Nguyễn Trung C", "Đàm Đức Hiếu"],
         "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
         "Đơn vị 3": ["Đại biểu P3_A", "Đại biểu P3_B", "Đại biểu P3_C"],
         "Đơn vị 4": ["Đại biểu P4_A", "Đại biểu P4_B"],
@@ -139,7 +139,7 @@ else:
 
     # --- 3. BẢN ĐỒ TRỎ CỘT ĐÍCH DANH TRÊN GOOGLE SHEETS ---
     MAP_COT_DAI_BIEU = {
-        "Đại biểu QH 1": "AA", "Đại biểu QH 2": "AB", "Đại biểu QH 3": "AC",
+        "Đoàn Thị C": "AA", "Đại biểu QH 2": "AB", "Đại biểu QH 3": "AC",
         "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC",
         
         # Lưu ý: Các đại biểu phường dù khác tên nhưng vẫn trỏ chung vào AA, AB, AC... 
@@ -226,7 +226,6 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
-
 
 
 
