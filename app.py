@@ -68,17 +68,10 @@ HANG_MO_NEO = 6
 if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
-# --- HEADER QUỐC HUY: CĂN CHỈNH 1 HÀNG & ẢNH CHỐNG CHẶN ---
-header_html = """
-<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;">
-    <img src="https://hochiminhcity.gov.vn/documents/10180/2824707/logo.png" width="75" style="margin-right: 15px; flex-shrink: 0;">
-    
-    <div style="flex-grow: 1; overflow: hidden;">
-        <h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>
-        <h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5>
-    </div>
-</div>
-"""
+# --- HEADER QUỐC HUY: ÉP THÀNH 1 DÒNG ĐỂ TRÁNH LỖI HIỂN THỊ CODE ---
+header_html = """<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;"><img src="https://hochiminhcity.gov.vn/documents/10180/2824707/logo.png" width="75" style="margin-right: 15px; flex-shrink: 0;"><div style="flex-grow: 1; overflow: hidden;"><h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3><h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5></div></div>"""
+
+st.markdown(header_html, unsafe_allow_html=True)
 st.markdown(header_html, unsafe_allow_html=True)
 
 # ==========================================
@@ -164,3 +157,4 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong, TP. Lai Châu</div>", unsafe_allow_html=True)
+
