@@ -120,11 +120,11 @@ else:
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            tong_cu_tri = st.number_input("Tổng số (J)", min_value=0, step=1)
+            tong_cu_tri = st.number_input("Tổng số", min_value=0, step=1)
         with col2:
-            cu_tri_nam = st.number_input("Nam (K)", min_value=0, step=1)
+            cu_tri_nam = st.number_input("Nam", min_value=0, step=1)
         with col3:
-            cu_tri_nu = st.number_input("Nữ (L)", min_value=0, step=1)
+            cu_tri_nu = st.number_input("Nữ", min_value=0, step=1)
         
         st.write("") # Tạo khoảng trống
         submit_data = st.form_submit_button("Lưu & Gửi báo cáo", type="primary")
@@ -154,5 +154,6 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
