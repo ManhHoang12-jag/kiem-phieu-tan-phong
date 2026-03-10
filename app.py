@@ -7,7 +7,7 @@ import time
 # ==========================================
 # 1. THIẾT LẬP GIAO DIỆN CHÍNH THỨC
 # ==========================================
-st.set_page_config(page_title="Hệ thống Bầu cử Tân Phong", page_icon="🇻🇳", layout="centered")
+st.set_page_config(page_title="Hệ thống Báo cáo Bầu cử phường Tân Phong", page_icon="🇻🇳", layout="centered")
 
 # Bộ CSS mạnh nhất để ẩn giao diện thừa
 css_sach_se = """
@@ -154,4 +154,5 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
