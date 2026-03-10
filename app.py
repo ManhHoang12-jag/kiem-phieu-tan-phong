@@ -9,21 +9,24 @@ import time
 # ==========================================
 st.set_page_config(page_title="Hệ thống Bầu cử Tân Phong", page_icon="🇻🇳", layout="centered")
 
-# CSS Ẩn toàn bộ dấu vết của Streamlit và GitHub
+# Bộ CSS mạnh nhất để ẩn giao diện thừa
 css_sach_se = """
 <style>
-    /* Ẩn Menu chính và Footer */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    /* Ẩn thanh Header trắng trên cùng */
-    header {visibility: hidden;}
-    /* Ẩn nút Deploy và Toolbar (Chứa con mèo) */
-    [data-testid="stAppDeployButton"] {display: none !important;}
-    [data-testid="stToolbar"] {display: none !important;}
+    /* Ẩn Header, Footer, Menu */
+    #MainMenu {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    header {visibility: hidden !important;}
+    
+    /* Ẩn các nút công cụ của Streamlit */
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
+    
+    /* Ép ẩn các thẻ biểu tượng ngoài lề nếu có thể */
     .viewerBadge_container__1QSob {display: none !important;}
-    /* Đẩy giao diện lên cao, giảm khoảng trống thừa */
-    .block-container {padding-top: 1rem !important; padding-bottom: 0rem !important;}
-    /* Tùy chỉnh màu nút bấm */
+    .viewerBadge_link__1S137 {display: none !important;}
+    
+    /* Căn chỉnh lại khoảng trống */
+    .block-container {padding-top: 2rem !important; padding-bottom: 0rem !important;}
     .stButton>button {width: 100%; font-weight: bold; border-radius: 5px;}
 </style>
 """
@@ -49,16 +52,20 @@ except Exception as e:
 # ==========================================
 # 3. TRẠNG THÁI & HÀNG MỎ NEO
 # ==========================================
-HANG_MO_NEO = 6 # Tổ 1 bắt đầu từ hàng 6
-URL_QUOC_HUY = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Coat_of_arms_of_Vietnam.svg/1024px-Coat_of_arms_of_Vietnam.svg.png"
+HANG_MO_NEO = 6 
 
 if 'logged_in' not in st.session_state:
     st.session_state.update({'logged_in': False, 'ten_to': '', 'hang_cua_to': 0})
 
-# --- HEADER QUỐC HUY ---
+# --- HEADER QUỐC HUY SỬ DỤNG ẢNH TRỰC TIẾP ---
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    st.image(URL_QUOC_HUY, width=90)
+    # Gọi trực tiếp file ảnh đã tải lên GitHub
+    try:
+        st.image("logo.png", width=90)
+    except:
+        st.write("🇻🇳") # Hiển thị cờ nếu file ảnh chưa kịp nhận
+
 with col_title:
     st.markdown("<h3 style='text-align: left; color: #cc0000; margin-bottom: 0px;'>ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3>", unsafe_allow_html=True)
     st.markdown("<h5 style='text-align: left; color: #333333; margin-top: 5px;'>Cổng Nhập liệu Bầu cử Trực tuyến</h5>", unsafe_allow_html=True)
@@ -147,3 +154,4 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
