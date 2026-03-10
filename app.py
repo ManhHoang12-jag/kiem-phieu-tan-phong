@@ -106,7 +106,7 @@ else:
 
     # --- CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
     DANH_SACH_DAI_BIEU = {
-        "Đơn vị số 1": ["Đại biểu A", "Đại biểu B", "Đại biểu C"],
+        "Đơn vị số 1": ["Lò Thị Mai Dinh", "Đại biểu B", "Đại biểu C"],
         "Đơn vị số 2": ["Đại biểu D", "Đại biểu E", "Đại biểu F"]
     }
 
@@ -118,7 +118,7 @@ else:
         "phieu_hop_le": "O",
         "phieu_khong_hop_le": "P",
         # Phần đại biểu (Ví dụ trỏ tiếp từ cột Q trở đi)
-        "Đại biểu A": "Q", "Đại biểu B": "R", "Đại biểu C": "S",
+        "Lò Thị Mai Dinh": "Q", "Đại biểu B": "R", "Đại biểu C": "S",
         "Đại biểu D": "T", "Đại biểu E": "U", "Đại biểu F": "V"
     }
 
@@ -181,4 +181,5 @@ else:
         st.rerun()
         
     st.markdown("<div style='text-align: center; color: grey; font-size: 12px; margin-top: 30px;'>© 2026 - Bản quyền thuộc UBND Phường Tân Phong</div>", unsafe_allow_html=True)
+
 
