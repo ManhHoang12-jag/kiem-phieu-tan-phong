@@ -155,7 +155,7 @@ else:
         },
         "HĐND phường": {
             "tong_ct": "I", "nam": "J", "nu": "K",  
-            "phat": "R", "thu": "R", "hop": "V", "khong": "X",
+            "phat": "R", "thu": "T", "hop": "V", "khong": "X",
             "dai_bieu": {
                 "Hoàng Tuấn Anh": "Z", "Trần Thị Cậy": "AB", "Nguyễn Thị Thanh Duyên": "AD", "Lê Quang Hòa": "AF", "Nguyễn Văn Nghiệp": "AH", "Đỗ Thị Nụ": "AJ", "Bùi Thị Thảo": "AL",
                 "Lỳ Gió Chứ": "Z", "Lê Ngọc Dũng": "AB", "Vàng Thị Lan": "AD", "Dương Thị Nhài": "AF", "Nguyễn Thị Thắm": "AH", "Đỗ Văn Thủy": "AJ", "Nguyễn Thị Hải Yến": "AL",
@@ -266,3 +266,4 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
