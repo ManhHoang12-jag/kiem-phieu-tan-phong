@@ -215,10 +215,10 @@ else:
 
                     # 2. TRỎ TỪNG Ô CHO PHẦN NGHIỆP VỤ PHIẾU (M, N, O, P)
                     # Tại đây bạn có thể đổi chữ M, N, O, P thành bất kỳ cột nào bạn muốn
-                    updates.append({'range': f'M{h}', 'values': [[p_phat]]}) # Phát ra
-                    updates.append({'range': f'N{h}', 'values': [[p_thu]]})  # Thu vào
-                    updates.append({'range': f'O{h}', 'values': [[p_hop]]})  # Hợp lệ
-                    updates.append({'range': f'P{h}', 'values': [[p_khong]]})# Không hợp lệ
+                    updates.append({'range': f'S{h}', 'values': [[p_phat]]}) # Phát ra
+                    updates.append({'range': f'U{h}', 'values': [[p_thu]]})  # Thu vào
+                    updates.append({'range': f'W{h}', 'values': [[p_hop]]})  # Hợp lệ
+                    updates.append({'range': f'Y{h}', 'values': [[p_khong]]})# Không hợp lệ
                     
                     # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU (AA, AB, AC...)
                     for name, val in kq_db.items():
@@ -229,7 +229,7 @@ else:
                     try:
                         # Thực hiện ghi đồng loạt tất cả các ô đã trỏ ở trên
                         file_du_lieu.worksheet(sheet_name).batch_update(updates)
-                        st.success(f"✅ Đã lưu báo cáo thành công vào hàng {h}!")
+                        st.success(f"✅ Đã lưu báo cáo thành công! {h}!")
                         st.balloons()
                     except Exception as e:
                         st.error(f"❌ Lỗi ghi dữ liệu: {e}")
@@ -239,6 +239,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
