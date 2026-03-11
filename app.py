@@ -109,8 +109,8 @@ else:
     # Bạn hãy xóa tên Đơn vị cũ và gõ lại tên Đơn vị thực tế vào giữa 2 dấu ngoặc kép.
     # Lưu ý: Tuyệt đối không xóa dấu phẩy (,) ở cuối mỗi cụm.
     PHAN_BO_PHUONG = {
-        "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1", "Tổ 7": "Đơn vị 1",
-        "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 2", "Tổ 14": "Đơn vị 1",
+        "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1",
+        "Tổ 7": "Đơn vị 1", "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 2", "Tổ 14": "Đơn vị 1",
         "Tổ 15": "Đơn vị 3", "Tổ 16": "Đơn vị 3", "Tổ 17": "Đơn vị 3", "Tổ 18": "Đơn vị 3", "Tổ 19": "Đơn vị 3", "Tổ 20": "Đơn vị 3", "Tổ 21": "Đơn vị 3",
         "Tổ 22": "Đơn vị 4", "Tổ 23": "Đơn vị 4", "Tổ 24": "Đơn vị 4", "Tổ 25": "Đơn vị 4", "Tổ 26": "Đơn vị 4", "Tổ 27": "Đơn vị 4", "Tổ 28": "Đơn vị 4",
         "Tổ 29": "Đơn vị 5", "Tổ 30": "Đơn vị 5", "Tổ 31": "Đơn vị 5", "Tổ 32": "Đơn vị 5", "Tổ 33": "Đơn vị 5", "Tổ 34": "Đơn vị 5", "Tổ 35": "Đơn vị 5",
@@ -189,10 +189,10 @@ else:
         
         st.markdown("#### BƯỚC 3: QUẢN LÝ PHIẾU")
         c4, c5, c6, c7 = st.columns(4)
-        with c4: p_phat = st.number_input("Phát ra (M)", min_value=0, step=1)
-        with c5: p_thu = st.number_input("Thu vào (N)", min_value=0, step=1)
-        with c6: p_hop = st.number_input("Hợp lệ (O)", min_value=0, step=1)
-        with c7: p_khong = st.number_input("K.Hợp lệ (P)", min_value=0, step=1)
+        with c4: p_phat = st.number_input("Phát ra (S)", min_value=0, step=1)
+        with c5: p_thu = st.number_input("Thu vào (U)", min_value=0, step=1)
+        with c6: p_hop = st.number_input("Hợp lệ (W)", min_value=0, step=1)
+        with c7: p_khong = st.number_input("K.Hợp lệ (Y)", min_value=0, step=1)
         
         st.markdown(f"#### BƯỚC 4: KẾT QUẢ KIỂM PHIẾU")
         kq_db = {}
@@ -228,6 +228,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
