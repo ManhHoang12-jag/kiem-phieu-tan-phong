@@ -54,13 +54,11 @@ if 'logged_in' not in st.session_state:
 # ==========================================
 # 4. HEADER QUỐC HUY (CÔNG NGHỆ BASE64 VƯỢT TƯỜNG LỬA)
 # ==========================================
-# Hệ thống sẽ tìm file logo.png bạn đã tải lên GitHub và biến nó thành mã nội bộ
 if os.path.exists("logo.png"):
     with open("logo.png", "rb") as f:
         encoded_img = base64.b64encode(f.read()).decode()
     img_src = f"data:image/png;base64,{encoded_img}"
 else:
-    # Nếu bạn quên chưa tải logo.png, nó sẽ dùng hình Cờ Việt Nam tạm thời
     img_src = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/200px-Flag_of_Vietnam.svg.png"
 
 header_html = f"""<div style="display: flex; align-items: center; border-bottom: 2px solid #cc0000; padding-bottom: 15px; margin-bottom: 25px;"><img src="{img_src}" width="75" style="margin-right: 15px; flex-shrink: 0;"><div style="flex-grow: 1; overflow: hidden;"><h3 style="margin: 0; color: #cc0000; font-size: clamp(14px, 4vw, 20px); white-space: nowrap;">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHONG</h3><h5 style="margin: 0; color: #333333; font-size: clamp(12px, 3.5vw, 16px); margin-top: 4px; white-space: nowrap;">Cổng Nhập liệu Bầu cử Trực tuyến</h5></div></div>"""
@@ -98,16 +96,12 @@ if not st.session_state['logged_in']:
                 st.error(f"Lỗi truy xuất hệ thống: {e}")
 
 # ==========================================
-# ==========================================
-# ==========================================
-# 6. PHẦN NHẬP LIỆU ĐA CẤP (PHÂN BỔ THỦ CÔNG)
+# 6. PHẦN NHẬP LIỆU ĐA CẤP (PHÂN BỔ THỦ CÔNG & TỌA ĐỘ ĐA CẤP)
 # ==========================================
 else:
     st.info(f"👤 Tổ đang thao tác: **{st.session_state['ten_to']}** | 📍 Hàng lưu trữ: **{st.session_state['hang_cua_to']}**")
 
-    # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ CẤP PHƯỜNG (NHẬP THỦ CÔNG) ---
-    # Bạn hãy xóa tên Đơn vị cũ và gõ lại tên Đơn vị thực tế vào giữa 2 dấu ngoặc kép.
-    # Lưu ý: Tuyệt đối không xóa dấu phẩy (,) ở cuối mỗi cụm.
+    # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ CẤP PHƯỜNG ---
     PHAN_BO_PHUONG = {
         "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1",
         "Tổ 7": "Đơn vị 1", "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 2", "Tổ 14": "Đơn vị 1",
@@ -117,16 +111,11 @@ else:
         "Tổ 36": "Đơn vị 6", "Tổ 37": "Đơn vị 6", "Tổ 38": "Đơn vị 6", "Tổ 39": "Đơn vị 6", "Tổ 40": "Đơn vị 6", "Tổ 41": "Đơn vị 6", "Tổ 42": "Đơn vị 6",
         "Tổ 43": "Đơn vị 7", "Tổ 44": "Đơn vị 7", "Tổ 45": "Đơn vị 7", "Tổ 46": "Đơn vị 7", "Tổ 47": "Đơn vị 7"
     }
-    
-    # Lấy ra tên Đơn vị của Tổ đang đăng nhập (Nếu quên chưa khai báo sẽ báo lỗi)
     don_vi_phuong_cua_to = PHAN_BO_PHUONG.get(st.session_state['ten_to'], "Chưa có đơn vị")
 
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
-    # Cấp Quốc hội & Tỉnh (Dùng chung cho cả 47 Tổ)
     DS_QUOC_HOI = ["Vừ Thị Mai Dinh", "Vũ Minh Đạo", "Sùng A Hồ", "Vì Thị Ngoan", "Cà Thị Thắm"]
     DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
-    
-    # Cấp Phường (7 Đơn vị có 7 danh sách khác nhau)
     DS_PHUONG = {
         "Đơn vị 1": ["Lê Xuân Dũng", "Đại biểu P1_B", "Đại biểu P1_C"],
         "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
@@ -137,18 +126,34 @@ else:
         "Đơn vị 7": ["Đại biểu P7_A", "Đại biểu P7_B", "Đại biểu P7_C"]
     }
 
-    # --- 3. BẢN ĐỒ TRỎ CỘT TRÊN GOOGLE SHEETS ---
-    MAP_COT_DAI_BIEU = {
-        "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", "Vì Thị Ngoan": "AG", "Cà Thị Thắm": "AI",
-        "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC",
-        
-        "Đại biểu P1_A": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
-        "Đại biểu P2_A": "AA", "Đại biểu P2_B": "AB",
-        "Đại biểu P3_A": "AA", "Đại biểu P3_B": "AB", "Đại biểu P3_C": "AC",
-        "Đại biểu P4_A": "AA", "Đại biểu P4_B": "AB",
-        "Đại biểu P5_A": "AA", "Đại biểu P5_B": "AB",
-        "Đại biểu P6_A": "AA", "Đại biểu P6_B": "AB",
-        "Đại biểu P7_A": "AA", "Đại biểu P7_B": "AB", "Đại biểu P7_C": "AC"
+    # --- 3. BẢN ĐỒ TỌA ĐỘ CHI TIẾT CHO TỪNG CẤP ---
+    # Bạn có thể tự do thay đổi cột Phát (phat), Thu (thu), Hợp lệ (hop), Không hợp lệ (khong) riêng cho từng cấp tại đây.
+    MAP_TOA_DO_CHI_TIET = {
+        "Quốc hội": {
+            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
+            "dai_bieu": {
+                "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", 
+                "Vì Thị Ngoan": "AG", "Cà Thị Thắm": "AI"
+            }
+        },
+        "HĐND tỉnh": {
+            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
+            "dai_bieu": {
+                "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC"
+            }
+        },
+        "HĐND phường": {
+            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
+            "dai_bieu": {
+                "Lê Xuân Dũng": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
+                "Đại biểu P2_A": "AA", "Đại biểu P2_B": "AB",
+                "Đại biểu P3_A": "AA", "Đại biểu P3_B": "AB", "Đại biểu P3_C": "AC",
+                "Đại biểu P4_A": "AA", "Đại biểu P4_B": "AB",
+                "Đại biểu P5_A": "AA", "Đại biểu P5_B": "AB",
+                "Đại biểu P6_A": "AA", "Đại biểu P6_B": "AB",
+                "Đại biểu P7_A": "AA", "Đại biểu P7_B": "AB", "Đại biểu P7_C": "AC"
+            }
+        }
     }
 
     MAP_SHEET = {
@@ -168,7 +173,6 @@ else:
         danh_sach_hien_tai = DS_TINH
         thong_bao = "Toàn phường"
     else:
-        # Nếu đang nhập cho phường mà lỡ quên chưa gán đơn vị cho Tổ thì dừng lại báo lỗi
         if don_vi_phuong_cua_to == "Chưa có đơn vị":
             st.error("⚠️ Lỗi: Hệ thống chưa được cấu hình Đơn vị bầu cử cho Tổ này. Vui lòng liên hệ quản trị viên!")
             st.stop()
@@ -188,11 +192,15 @@ else:
         with c3: nu_ct = st.number_input("Nữ (L)", min_value=0, step=1)
         
         st.markdown("#### BƯỚC 3: QUẢN LÝ PHIẾU")
+        
+        # Tiêu đề form quản lý phiếu linh hoạt hiển thị đúng cột đang trỏ
+        cau_hinh_hien_tai = MAP_TOA_DO_CHI_TIET[cap_bau_cu]
+        
         c4, c5, c6, c7 = st.columns(4)
-        with c4: p_phat = st.number_input("Phát ra (S)", min_value=0, step=1)
-        with c5: p_thu = st.number_input("Thu vào (U)", min_value=0, step=1)
-        with c6: p_hop = st.number_input("Hợp lệ (W)", min_value=0, step=1)
-        with c7: p_khong = st.number_input("K.Hợp lệ (Y)", min_value=0, step=1)
+        with c4: p_phat = st.number_input(f"Phát ra ({cau_hinh_hien_tai['phat']})", min_value=0, step=1)
+        with c5: p_thu = st.number_input(f"Thu vào ({cau_hinh_hien_tai['thu']})", min_value=0, step=1)
+        with c6: p_hop = st.number_input(f"Hợp lệ ({cau_hinh_hien_tai['hop']})", min_value=0, step=1)
+        with c7: p_khong = st.number_input(f"K.Hợp lệ ({cau_hinh_hien_tai['khong']})", min_value=0, step=1)
         
         st.markdown(f"#### BƯỚC 4: KẾT QUẢ KIỂM PHIẾU")
         kq_db = {}
@@ -208,28 +216,26 @@ else:
                     h = st.session_state['hang_cua_to']
                     updates = []
                     
-                    # 1. TRỎ TỪNG Ô CHO PHẦN TIẾN ĐỘ CỨ TRÌ (J, K, L)
-                    updates.append({'range': f'J{h}', 'values': [[t_ct]]})  # Tổng cử tri
-                    updates.append({'range': f'K{h}', 'values': [[n_ct]]})  # Nam
-                    updates.append({'range': f'L{h}', 'values': [[nu_ct]]}) # Nữ
+                    # 1. TRỎ TỪNG Ô CHO PHẦN TIẾN ĐỘ CỬ TRI (Cố định J, K, L)
+                    updates.append({'range': f'J{h}', 'values': [[t_ct]]})
+                    updates.append({'range': f'K{h}', 'values': [[n_ct]]})
+                    updates.append({'range': f'L{h}', 'values': [[nu_ct]]})
 
-                    # 2. TRỎ TỪNG Ô CHO PHẦN NGHIỆP VỤ PHIẾU (M, N, O, P)
-                    # Tại đây bạn có thể đổi chữ M, N, O, P thành bất kỳ cột nào bạn muốn
-                    updates.append({'range': f'S{h}', 'values': [[p_phat]]}) # Phát ra
-                    updates.append({'range': f'U{h}', 'values': [[p_thu]]})  # Thu vào
-                    updates.append({'range': f'W{h}', 'values': [[p_hop]]})  # Hợp lệ
-                    updates.append({'range': f'Y{h}', 'values': [[p_khong]]})# Không hợp lệ
+                    # 2. TRỎ TỪNG Ô NGHIỆP VỤ PHIẾU THEO CẤP
+                    updates.append({'range': f'{cau_hinh_hien_tai["phat"]}{h}', 'values': [[p_phat]]})
+                    updates.append({'range': f'{cau_hinh_hien_tai["thu"]}{h}', 'values': [[p_thu]]})
+                    updates.append({'range': f'{cau_hinh_hien_tai["hop"]}{h}', 'values': [[p_hop]]})
+                    updates.append({'range': f'{cau_hinh_hien_tai["khong"]}{h}', 'values': [[p_khong]]})
                     
-                    # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU (AA, AB, AC...)
+                    # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU
                     for name, val in kq_db.items():
-                        col_letter = MAP_COT_DAI_BIEU.get(name)
+                        col_letter = cau_hinh_hien_tai["dai_bieu"].get(name)
                         if col_letter:
                             updates.append({'range': f'{col_letter}{h}', 'values': [[val]]})
                     
                     try:
-                        # Thực hiện ghi đồng loạt tất cả các ô đã trỏ ở trên
                         file_du_lieu.worksheet(sheet_name).batch_update(updates)
-                        st.success(f"✅ Đã lưu báo cáo thành công! {h}!")
+                        st.success(f"✅ Đã lưu báo cáo thành công vào hàng {h}!")
                         st.balloons()
                     except Exception as e:
                         st.error(f"❌ Lỗi ghi dữ liệu: {e}")
@@ -239,17 +245,3 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
