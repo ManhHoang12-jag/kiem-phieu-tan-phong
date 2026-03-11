@@ -128,20 +128,21 @@ else:
 
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
     DS_QUOC_HOI = ["Vừ Thị Mai Dinh", "Vũ Minh Đạo", "Sùng A Hồ", "Vì Thị Ngoan", "Cà Thị Thắm"]
-    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
+    DS_TINH = ["Phạm Văn Đức", "Vương Văn Lợi", "Hầu Thị Mỉ", "Lê Minh Ngân", "Thùng Xuân Thành", "Trần Thị Phước Thủy", "Nguyễn Xuân Thức", "Mùa A Trừ"]
     DS_PHUONG = {
-        "Đơn vị 1": ["Lê Xuân Dũng", "Đại biểu P1_B", "Đại biểu P1_C"],
-        "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
-        "Đơn vị 3": ["Đại biểu P3_A", "Đại biểu P3_B", "Đại biểu P3_C"],
-        "Đơn vị 4": ["Đại biểu P4_A", "Đại biểu P4_B"],
-        "Đơn vị 5": ["Đại biểu P5_A", "Đại biểu P5_B"],
-        "Đơn vị 6": ["Đại biểu P6_A", "Đại biểu P6_B"],
-        "Đơn vị 7": ["Đại biểu P7_A", "Đại biểu P7_B", "Đại biểu P7_C"]
+        "Đơn vị 1": ["Hoàng Tuấn Anh", "Trần Thị Cậy", "Nguyễn Thị Thanh Duyên", "Lê Quang Hòa", "Nguyễn Văn Nghiệp", "Đỗ Thị Nụ", "Bùi Thị Thảo"],
+        "Đơn vị 2": ["Lỳ Gió Chứ", "Lê Ngọc Dũng", "Vàng Thị Lan", "Dương Thị Nhài", "Nguyễn Thị Thắm", "Đỗ Văn Thủy", "Nguyễn Thị Hải Yến"],
+        "Đơn vị 3": ["Lê Hải Hùng", "Nguyễn Văn Long", "Lê Văn Phong", "Lê Hồng Quyết", "Đào Văn Trọng"],
+        "Đơn vị 4": ["Nguyễn Thị Hòa", "Lèng Văn Pây", "Lù Văn Thắng", "Nguyễn Thị Thược", "Mùa A Trừ"],
+        "Đơn vị 5": ["Vùi Văn Chài", "Lù Thị Kim Cương", "Lò Văn Sung", "Tống Thị Thanh Thắm", "Trần Văn Tìm"],
+        "Đơn vị 6": ["Phạm Thị Hà", "Thào A Phử", "Lý A Tủa"],
+        "Đơn vị 7": ["Lê Xuân Dũng", "Hảng A Nhà", "Thào A Phình", "Lèng Văn Sơn", "Vàng Văn Tem"],
     }
 
     # --- 3. BẢN ĐỒ TỌA ĐỘ CHI TIẾT ---
     MAP_TOA_DO_CHI_TIET = {
         "Quốc hội": {
+            "tong_ct": "J", "nam": "K", "nu": "L",  # Giữ nguyên J, K, L
             "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
             "dai_bieu": {
                 "Vừ Thị Mai Dinh": "AA", "Vũ Minh Đạo": "AC", "Sùng A Hồ": "AE", 
@@ -149,21 +150,23 @@ else:
             }
         },
         "HĐND tỉnh": {
+            "tong_ct": "J", "nam": "K", "nu": "L",  # Giữ nguyên J, K, L
             "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
             "dai_bieu": {
-                "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC"
+                "Phạm Văn Đức": "AA", "Vương Đức Lợi": "AC", "Hầu Thị Mỉ": "AE", "Lê Minh Ngân": "AG", "Thùng Xuân Thành": "AI", "Trần Thị Phước Thủy": "AK", "Nguyễn Xuân Thức": "AM", "Mùa A Trừ": "AO"
             }
         },
         "HĐND phường": {
-            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
+            "tong_ct": "I", "nam": "J", "nu": "K",  
+            "phat": "R", "thu": "R", "hop": "V", "khong": "X",
             "dai_bieu": {
-                "Lê Xuân Dũng": "AA", "Đại biểu P1_B": "AB", "Đại biểu P1_C": "AC",
-                "Đại biểu P2_A": "AA", "Đại biểu P2_B": "AB",
-                "Đại biểu P3_A": "AA", "Đại biểu P3_B": "AB", "Đại biểu P3_C": "AC",
-                "Đại biểu P4_A": "AA", "Đại biểu P4_B": "AB",
-                "Đại biểu P5_A": "AA", "Đại biểu P5_B": "AB",
-                "Đại biểu P6_A": "AA", "Đại biểu P6_B": "AB",
-                "Đại biểu P7_A": "AA", "Đại biểu P7_B": "AB", "Đại biểu P7_C": "AC"
+                "Hoàng Tuấn Anh": "Z", "Trần Thị Cậy": "AB", "Nguyễn Thị Thanh Duyên": "AD", "Lê Quang Hòa": "AF", "Nguyễn Văn Nghiệp": "AH", "Đỗ Thị Nụ": "AJ", "Bùi Thị Thảo": "AL",
+                "Lỳ Gió Chứ": "Z", "Lê Ngọc Dũng": "AB", "Vàng Thị Lan": "AD", "Dương Thị Nhài": "AF", "Nguyễn Thị Thắm": "AH", "Đỗ Văn Thủy": "AJ", "Nguyễn Thị Hải Yến": "AL",
+                "Lê Hải Hùng": "Z", "Nguyễn Văn Long": "AB", "Lê Văn Phong": "AD", "Lê Hồng Quyết": "AF", "Đào Văn Trọng": "AH",
+                "Nguyễn Thị Hòa": "Z", "Lèng Văn Pây": "AB", "Lù Văn Thắng": "AD", "Nguyễn Thị Thược": "AF", "Mùa A Trừ": "AH",
+                "Vùi Văn Chài": "Z", "Lù Thị Kim Cương": "AB", "Lò Văn Sung": "AD", "Tống Thị Thanh Thắm": "AF", "Trần Văn Tìm": "AH",
+                "Phạm Thị Hà": "Z", "Thào A Phử": "AB", "Lý A Tủa": "AD",
+                "Lê Xuân Dũng": "Z", "Hảng A Nhà": "AB", "Thào A Phình": "AD", "Lèng Văn Sơn": "AF", "Trần Văn Tìm": "AH"
             }
         }
     }
@@ -263,6 +266,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
