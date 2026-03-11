@@ -99,23 +99,36 @@ if not st.session_state['logged_in']:
 # 6. PHẦN NHẬP LIỆU ĐA CẤP (PHÂN BỔ THỦ CÔNG & TỌA ĐỘ ĐA CẤP)
 # ==========================================
 else:
-    st.info(f"👤 Tổ đang thao tác: **{st.session_state['ten_to']}** | 📍 Hàng lưu trữ: **{st.session_state['hang_cua_to']}**")
+    st.info(f"👤 Tổ đang thao tác: **{st.session_state['ten_to']}**")
 
     # --- 1. PHÂN BỔ 47 TỔ VÀO 7 ĐƠN VỊ CẤP PHƯỜNG ---
     PHAN_BO_PHUONG = {
-        "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1",
-        "Tổ 7": "Đơn vị 1", "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 2", "Tổ 14": "Đơn vị 1",
-        "Tổ 15": "Đơn vị 3", "Tổ 16": "Đơn vị 3", "Tổ 17": "Đơn vị 3", "Tổ 18": "Đơn vị 3", "Tổ 19": "Đơn vị 3", "Tổ 20": "Đơn vị 3", "Tổ 21": "Đơn vị 3",
-        "Tổ 22": "Đơn vị 4", "Tổ 23": "Đơn vị 4", "Tổ 24": "Đơn vị 4", "Tổ 25": "Đơn vị 4", "Tổ 26": "Đơn vị 4", "Tổ 27": "Đơn vị 4", "Tổ 28": "Đơn vị 4",
-        "Tổ 29": "Đơn vị 5", "Tổ 30": "Đơn vị 5", "Tổ 31": "Đơn vị 5", "Tổ 32": "Đơn vị 5", "Tổ 33": "Đơn vị 5", "Tổ 34": "Đơn vị 5", "Tổ 35": "Đơn vị 5",
-        "Tổ 36": "Đơn vị 6", "Tổ 37": "Đơn vị 6", "Tổ 38": "Đơn vị 6", "Tổ 39": "Đơn vị 6", "Tổ 40": "Đơn vị 6", "Tổ 41": "Đơn vị 6", "Tổ 42": "Đơn vị 6",
+        "Tổ 1": "Đơn vị 1", "Tổ 2": "Đơn vị 1", "Tổ 3": "Đơn vị 1", "Tổ 4": "Đơn vị 1", "Tổ 5": "Đơn vị 1", "Tổ 6": "Đơn vị 1", "Tổ 7": "Đơn vị 2", 
+        "Tổ 8": "Đơn vị 2", "Tổ 9": "Đơn vị 2", "Tổ 10": "Đơn vị 2", "Tổ 11": "Đơn vị 2", "Tổ 12": "Đơn vị 2", "Tổ 13": "Đơn vị 3", "Tổ 14": "Đơn vị 3",
+        "Tổ 15": "Đơn vị 3", "Tổ 16": "Đơn vị 3", "Tổ 17": "Đơn vị 3", "Tổ 18": "Đơn vị 4", "Tổ 19": "Đơn vị 4", "Tổ 20": "Đơn vị 4", "Tổ 21": "Đơn vị 4",
+        "Tổ 22": "Đơn vị 4", "Tổ 23": "Đơn vị 4", "Tổ 24": "Đơn vị 4", "Tổ 25": "Đơn vị 5", "Tổ 26": "Đơn vị 5", "Tổ 27": "Đơn vị 5", "Tổ 28": "Đơn vị 5",
+        "Tổ 29": "Đơn vị 5", "Tổ 30": "Đơn vị 5", "Tổ 31": "Đơn vị 5", "Tổ 32": "Đơn vị 5", "Tổ 33": "Đơn vị 5", "Tổ 34": "Đơn vị 6", "Tổ 35": "Đơn vị 6",
+        "Tổ 36": "Đơn vị 6", "Tổ 37": "Đơn vị 6", "Tổ 38": "Đơn vị 6", "Tổ 39": "Đơn vị 6", "Tổ 40": "Đơn vị 6", "Tổ 41": "Đơn vị 7", "Tổ 42": "Đơn vị 7",
         "Tổ 43": "Đơn vị 7", "Tổ 44": "Đơn vị 7", "Tổ 45": "Đơn vị 7", "Tổ 46": "Đơn vị 7", "Tổ 47": "Đơn vị 7"
     }
     don_vi_phuong_cua_to = PHAN_BO_PHUONG.get(st.session_state['ten_to'], "Chưa có đơn vị")
 
+    # --- TÍNH NĂNG MỚI: BẢN ĐỒ DÒNG (ROW) DÀNH RIÊNG CHO CẤP PHƯỜNG ---
+    # Ví dụ: 7 tổ đầu liền nhau (dòng 6-12), sau đó cách 2 dòng (bỏ qua 13, 14), Tổ 8 bắt đầu từ dòng 15...
+    # Bạn tự điền số dòng thực tế trên file Google Sheets của bạn vào đây:
+    MAP_HANG_PHUONG = {
+        "Tổ 1": 7, "Tổ 2": 8, "Tổ 3": 9, "Tổ 4": 10, "Tổ 5": 11, "Tổ 6": 12,
+        "Tổ 7": 15, "Tổ 8": 16, "Tổ 9": 17, "Tổ 10": 18, "Tổ 11": 19, "Tổ 12": 20,
+        "Tổ 13": 23, "Tổ 14": 24, "Tổ 15": 25, "Tổ 16": 26, "Tổ 17": 27, "Tổ 18": 30, "Tổ 19": 31, "Tổ 20": 32, "Tổ 21": 33, "Tổ 22": 24, "Tổ 23": 35, "Tổ 24": 36,
+        "Tổ 25": 39, "Tổ 26": 40, "Tổ 27": 41, "Tổ 28": 42, "Tổ 29": 43, "Tổ 30": 44, "Tổ 31": 45, "Tổ 32": 46, "Tổ 33": 47,
+        "Tổ 34": 50, "Tổ 35": 51, "Tổ 36": 52, "Tổ 37": 53, "Tổ 38": 54, "Tổ 39": 55, "Tổ 40": 56,
+        "Tổ 41": 59, "Tổ 42": 60, "Tổ 43": 61, "Tổ 44": 62, "Tổ 45": 63, "Tổ 47": 64,
+        # ... Bạn gõ tiếp cho đến Tổ 47 nhé
+    }
+
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
     DS_QUOC_HOI = ["Vừ Thị Mai Dinh", "Vũ Minh Đạo", "Sùng A Hồ", "Vì Thị Ngoan", "Cà Thị Thắm"]
-    DS_TINH = ["Phạm Văn Đức", "Vương Đức Lợi", "Hầu Thị Mỉ", "Lê Minh Ngân", "Thùng Xuân Thành", "Trần Thị Phước Thủy", "Nguyễn Xuân Thức", "Mùa A Trừ"]
+    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
     DS_PHUONG = {
         "Đơn vị 1": ["Lê Xuân Dũng", "Đại biểu P1_B", "Đại biểu P1_C"],
         "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
@@ -126,8 +139,7 @@ else:
         "Đơn vị 7": ["Đại biểu P7_A", "Đại biểu P7_B", "Đại biểu P7_C"]
     }
 
-    # --- 3. BẢN ĐỒ TỌA ĐỘ CHI TIẾT CHO TỪNG CẤP ---
-    # Bạn có thể tự do thay đổi cột Phát (phat), Thu (thu), Hợp lệ (hop), Không hợp lệ (khong) riêng cho từng cấp tại đây.
+    # --- 3. BẢN ĐỒ TỌA ĐỘ CHI TIẾT ---
     MAP_TOA_DO_CHI_TIET = {
         "Quốc hội": {
             "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
@@ -139,7 +151,7 @@ else:
         "HĐND tỉnh": {
             "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
             "dai_bieu": {
-                "Phạm Văn Đức": "AA", "Vương Đức Lợi": "AC", "Hầu Thị Mỉ": "AE", "Lê Minh Ngân": "AG", "Thùng Xuân Thành": "AI", "Trần Thị Phước Thủy": "AK", "Nguyễn Xuân Thức": "AM", "Mùa A Trừ": "AO"
+                "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC"
             }
         },
         "HĐND phường": {
@@ -187,13 +199,11 @@ else:
     with st.form("Form_Nhap_Lieu"):
         st.markdown("#### BƯỚC 2: TIẾN ĐỘ CỬ TRI")
         c1, c2, c3 = st.columns(3)
-        with c1: t_ct = st.number_input("Tổng cử tri (J)", min_value=0, step=1)
-        with c2: n_ct = st.number_input("Nam (K)", min_value=0, step=1)
-        with c3: nu_ct = st.number_input("Nữ (L)", min_value=0, step=1)
+        with c1: t_ct = st.number_input("Tổng cử tri", min_value=0, step=1)
+        with c2: n_ct = st.number_input("Nam", min_value=0, step=1)
+        with c3: nu_ct = st.number_input("Nữ", min_value=0, step=1)
         
         st.markdown("#### BƯỚC 3: QUẢN LÝ PHIẾU")
-        
-        # Tiêu đề form quản lý phiếu linh hoạt hiển thị đúng cột đang trỏ
         cau_hinh_hien_tai = MAP_TOA_DO_CHI_TIET[cap_bau_cu]
         
         c4, c5, c6, c7 = st.columns(4)
@@ -212,22 +222,30 @@ else:
                 st.error("❌ Lỗi logic toán học (Cử tri hoặc Số phiếu không khớp)!")
             else:
                 sheet_name = MAP_SHEET[cap_bau_cu]
-                with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}'..."):
+                
+                # --- ĐIỀU HƯỚNG DÒNG (ROW) THÔNG MINH TẠI ĐÂY ---
+                if cap_bau_cu == "HĐND phường":
+                    # Lấy số hàng tùy chỉnh từ MAP_HANG_PHUONG
+                    h = MAP_HANG_PHUONG.get(st.session_state['ten_to'])
+                    if not h:
+                        st.error(f"⚠️ Chưa cấu hình dòng cho {st.session_state['ten_to']} cấp Phường. Vui lòng khai báo trong code!")
+                        st.stop()
+                else:
+                    # Nếu là Quốc hội / Tỉnh thì lấy số hàng liền mạch đã tính lúc đăng nhập
                     h = st.session_state['hang_cua_to']
+
+                with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}' tại hàng {h}..."):
                     updates = []
                     
-                    # 1. TRỎ TỪNG Ô CHO PHẦN TIẾN ĐỘ CỬ TRI (Cố định J, K, L)
                     updates.append({'range': f'J{h}', 'values': [[t_ct]]})
                     updates.append({'range': f'K{h}', 'values': [[n_ct]]})
                     updates.append({'range': f'L{h}', 'values': [[nu_ct]]})
 
-                    # 2. TRỎ TỪNG Ô NGHIỆP VỤ PHIẾU THEO CẤP
                     updates.append({'range': f'{cau_hinh_hien_tai["phat"]}{h}', 'values': [[p_phat]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["thu"]}{h}', 'values': [[p_thu]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["hop"]}{h}', 'values': [[p_hop]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["khong"]}{h}', 'values': [[p_khong]]})
                     
-                    # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU
                     for name, val in kq_db.items():
                         col_letter = cau_hinh_hien_tai["dai_bieu"].get(name)
                         if col_letter:
@@ -245,5 +263,6 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
