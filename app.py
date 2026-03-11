@@ -218,37 +218,39 @@ else:
             kq_db[db] = st.number_input(f"Số phiếu của: {db}", min_value=0, step=1)
             
         if st.form_submit_button("LƯU & GỬI BÁO CÁO", type="primary"):
-            if t_ct != (n_ct + nu_ct) or p_thu != (p_hop + p_khong):
-                st.error("❌ Lỗi logic toán học (Cử tri hoặc Số phiếu không khớp)!")
+            # --- HỆ THỐNG KIỂM TRA CHÉO ĐA LỚP ---
+            if t_ct != (n_ct + nu_ct):
+                st.error("❌ Lỗi 1: Tổng số cử tri đi bầu không khớp với phép tính (Nam + Nữ)!")
+            elif p_thu != (p_hop + p_khong):
+                st.error("❌ Lỗi 2: Số phiếu thu vào không khớp với (Hợp lệ + Không hợp lệ)!")
+            elif p_thu > p_phat:
+                st.error("❌ Lỗi 3: Vô lý! Số phiếu THU VÀO đang lớn hơn số phiếu PHÁT RA!")
+            elif p_phat > t_ct:
+                st.error("❌ Lỗi 4: Vô lý! Số phiếu PHÁT RA đang lớn hơn TỔNG CỬ TRI đi bầu!")
             else:
                 sheet_name = MAP_SHEET[cap_bau_cu]
                 
                 # --- ĐIỀU HƯỚNG DÒNG (ROW) THÔNG MINH TẠI ĐÂY ---
                 if cap_bau_cu == "HĐND phường":
-                    # Lấy số hàng tùy chỉnh từ MAP_HANG_PHUONG
                     h = MAP_HANG_PHUONG.get(st.session_state['ten_to'])
                     if not h:
-                        st.error(f"⚠️ Chưa cấu hình dòng cho {st.session_state['ten_to']} cấp Phường. Vui lòng khai báo trong code!")
+                        st.error(f"⚠️ Chưa cấu hình dòng cho {st.session_state['ten_to']} cấp Phường.")
                         st.stop()
                 else:
-                    # Nếu là Quốc hội / Tỉnh thì lấy số hàng liền mạch đã tính lúc đăng nhập
                     h = st.session_state['hang_cua_to']
 
                 with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}' tại hàng {h}..."):
                     updates = []
                     
-                    # 1. TRỎ CỬ TRI LINH HOẠT TỰ ĐỘNG THEO CẤP BẦU CỬ
                     updates.append({'range': f'{cau_hinh_hien_tai["tong_ct"]}{h}', 'values': [[t_ct]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["nam"]}{h}', 'values': [[n_ct]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["nu"]}{h}', 'values': [[nu_ct]]})
 
-                    # 2. TRỎ TỪNG Ô NGHIỆP VỤ PHIẾU THEO CẤP
                     updates.append({'range': f'{cau_hinh_hien_tai["phat"]}{h}', 'values': [[p_phat]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["thu"]}{h}', 'values': [[p_thu]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["hop"]}{h}', 'values': [[p_hop]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["khong"]}{h}', 'values': [[p_khong]]})
                     
-                    # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU
                     for name, val in kq_db.items():
                         col_letter = cau_hinh_hien_tai["dai_bieu"].get(name)
                         if col_letter:
@@ -266,4 +268,5 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
