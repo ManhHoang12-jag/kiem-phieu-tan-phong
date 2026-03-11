@@ -137,9 +137,9 @@ else:
             }
         },
         "HĐND tỉnh": {
-            "phat": "R", "thu": "T", "hop": "V", "khong": "X",
+            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
             "dai_bieu": {
-                "Phạm Văn Đức": "Z", "Vương Đức Lợi": "AB", "Hầu Thị Mỉ": "AD", "Lê Minh Ngân": "AF", "Thùng Xuân Thành": "AH", "Trần Thị Phước Thủy": "AJ", "Nguyễn Xuân Thức": "AL", "Mùa A Trừ": "AN"
+                "Phạm Văn Đức": "AA", "Vương Đức Lợi": "AC", "Hầu Thị Mỉ": "AE", "Lê Minh Ngân": "AG", "Thùng Xuân Thành": "AI", "Trần Thị Phước Thủy": "AK", "Nguyễn Xuân Thức": "AM", "Mùa A Trừ": "AO"
             }
         },
         "HĐND phường": {
@@ -245,4 +245,5 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
