@@ -243,22 +243,10 @@ else:
                     with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}' tại hàng {h}..."):
                     updates = []
                     
-                    # 1. TRỎ CỬ TRI LINH HOẠT TỰ ĐỘNG THEO CẤP BẦU CỬ
-                    updates.append({'range': f'{cau_hinh_hien_tai["tong_ct"]}{h}', 'values': [[t_ct]]})
+                    # 1. TRỎ CỬ TRI LINH HOẠT THEO CẤP
+                    updates.append({'range': f'{cau_hinh_hien_tai["tong"]}{h}', 'values': [[t_ct]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["nam"]}{h}', 'values': [[n_ct]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["nu"]}{h}', 'values': [[nu_ct]]})
-
-                    # 2. TRỎ TỪNG Ô NGHIỆP VỤ PHIẾU THEO CẤP
-                    updates.append({'range': f'{cau_hinh_hien_tai["phat"]}{h}', 'values': [[p_phat]]})
-                    updates.append({'range': f'{cau_hinh_hien_tai["thu"]}{h}', 'values': [[p_thu]]})
-                    updates.append({'range': f'{cau_hinh_hien_tai["hop"]}{h}', 'values': [[p_hop]]})
-                    updates.append({'range': f'{cau_hinh_hien_tai["khong"]}{h}', 'values': [[p_khong]]})
-                    
-                    # 3. TRỎ TỪNG Ô CHO KẾT QUẢ ĐẠI BIỂU
-                    for name, val in kq_db.items():
-                        col_letter = cau_hinh_hien_tai["dai_bieu"].get(name)
-                        if col_letter:
-                            updates.append({'range': f'{col_letter}{h}', 'values': [[val]]})
                     
                     try:
                         file_du_lieu.worksheet(sheet_name).batch_update(updates)
@@ -272,6 +260,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
