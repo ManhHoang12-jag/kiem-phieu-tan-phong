@@ -240,9 +240,10 @@ else:
                 with st.spinner(f"Đang ghi dữ liệu vào Sheet '{sheet_name}' tại hàng {h}..."):
                     updates = []
                     
-                    updates.append({'range': f'J{h}', 'values': [[t_ct]]})
-                    updates.append({'range': f'K{h}', 'values': [[n_ct]]})
-                    updates.append({'range': f'L{h}', 'values': [[nu_ct]]})
+                    # 1. TRỎ CỬ TRI LINH HOẠT THEO CẤP
+                    updates.append({'range': f'{cau_hinh_hien_tai["tong"]}{h}', 'values': [[t_ct]]})
+                    updates.append({'range': f'{cau_hinh_hien_tai["nam"]}{h}', 'values': [[n_ct]]})
+                    updates.append({'range': f'{cau_hinh_hien_tai["nu"]}{h}', 'values': [[nu_ct]]})
 
                     updates.append({'range': f'{cau_hinh_hien_tai["phat"]}{h}', 'values': [[p_phat]]})
                     updates.append({'range': f'{cau_hinh_hien_tai["thu"]}{h}', 'values': [[p_thu]]})
@@ -266,6 +267,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
