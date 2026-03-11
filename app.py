@@ -72,7 +72,7 @@ if not st.session_state['logged_in']:
     st.markdown("#### Xác thực cán bộ Tổ bầu cử")
     with st.form("Login_Form"):
         danh_sach_to = [f"Tổ {i}" for i in range(1, 48)]
-        user_choice = st.selectbox("Chọn đơn vị Tổ bầu cử:", danh_sach_to)
+        user_choice = st.selectbox("Chọn Tổ bầu cử:", danh_sach_to)
         password_input = st.text_input("Mã bảo mật:", type="password")
         
         submit_login = st.form_submit_button("Đăng nhập hệ thống", type="primary")
@@ -287,6 +287,7 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
 
