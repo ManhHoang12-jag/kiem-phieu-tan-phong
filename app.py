@@ -256,17 +256,37 @@ else:
                         if col_letter:
                             updates.append({'range': f'{col_letter}{h}', 'values': [[val]]})
                     
-                    try:
-                        file_du_lieu.worksheet(sheet_name).batch_update(updates)
-                        st.success(f"✅ Đã lưu báo cáo thành công vào hàng {h}!")
-                        st.balloons()
-                    except Exception as e:
-                        st.error(f"❌ Lỗi ghi dữ liệu: {e}")
+                    # --- CƠ CHẾ CHỐNG QUÁ TẢI (AUTO-RETRY) ---
+                    so_lan_thu_lai = 3
+                    thoi_gian_cho = 5 # giây
+                    
+                    for lan_thu in range(so_lan_thu_lai):
+                        try:
+                            # Thực hiện ghi đồng loạt tất cả các ô đã trỏ
+                            file_du_lieu.worksheet(sheet_name).batch_update(updates)
+                            st.success(f"✅ Đã lưu báo cáo thành công vào hàng {h}!")
+                            st.balloons()
+                            break # Nếu gửi thành công thì thoát ngay khỏi vòng lặp chống tắc đường
+                            
+                        except Exception as e:
+                            thong_diep_loi = str(e).lower()
+                            # Bắt lỗi 429 (Too Many Requests) hoặc Quota của Google
+                            if "429" in thong_diep_loi or "quota" in thong_diep_loi or "rate limit" in thong_diep_loi:
+                                if lan_thu < so_lan_thu_lai - 1:
+                                    st.warning(f"⏳ Máy chủ đang xử lý nhiều Tổ cùng lúc. Hệ thống sẽ tự động thử lại sau {thoi_gian_cho} giây... (Lần {lan_thu + 1}/{so_lan_thu_lai})")
+                                    time.sleep(thoi_gian_cho)
+                                else:
+                                    st.error("❌ Mạng đang tắc nghẽn cục bộ do có quá nhiều Tổ cùng gửi. Đồng chí vui lòng đợi khoảng 1 phút rồi bấm nút Gửi lại!")
+                            else:
+                                # Nếu là lỗi khác (ví dụ sai tên Sheet) thì báo lỗi và dừng luôn
+                                st.error(f"❌ Lỗi ghi dữ liệu (Không phải do quá tải): {e}")
+                                break
 
     if st.button("🔒 Đăng xuất"):
         st.session_state.update({'logged_in': False})
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
 
 
