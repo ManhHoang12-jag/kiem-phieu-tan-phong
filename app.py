@@ -115,7 +115,7 @@ else:
 
     # --- 2. CẤU HÌNH DANH SÁCH ĐẠI BIỂU ---
     DS_QUOC_HOI = ["Vừ Thị Mai Dinh", "Vũ Minh Đạo", "Sùng A Hồ", "Vì Thị Ngoan", "Cà Thị Thắm"]
-    DS_TINH = ["Đại biểu Tỉnh 1", "Đại biểu Tỉnh 2", "Đại biểu Tỉnh 3"]
+    DS_TINH = ["Phạm Văn Đức", "Vương Đức Lợi", "Hầu Thị Mỉ", "Lê Minh Ngân", "Thùng Xuân Thành", "Trần Thị Phước Thủy", "Nguyễn Xuân Thức", "Mùa A Trừ"]
     DS_PHUONG = {
         "Đơn vị 1": ["Lê Xuân Dũng", "Đại biểu P1_B", "Đại biểu P1_C"],
         "Đơn vị 2": ["Đại biểu P2_A", "Đại biểu P2_B"],
@@ -137,9 +137,9 @@ else:
             }
         },
         "HĐND tỉnh": {
-            "phat": "S", "thu": "U", "hop": "W", "khong": "Y",
+            "phat": "R", "thu": "T", "hop": "V", "khong": "X",
             "dai_bieu": {
-                "Đại biểu Tỉnh 1": "AA", "Đại biểu Tỉnh 2": "AB", "Đại biểu Tỉnh 3": "AC"
+                "Phạm Văn Đức": "Z", "Vương Đức Lợi": "AB", "Hầu Thị Mỉ": "AD", "Lê Minh Ngân": "AF", "Thùng Xuân Thành": "AH", "Trần Thị Phước Thủy": "AJ", "Nguyễn Xuân Thức": "AL", "Mùa A Trừ": "AN"
             }
         },
         "HĐND phường": {
@@ -245,3 +245,4 @@ else:
         st.rerun()
         
 st.markdown("<div style='text-align: center; color: grey; font-size: 14px; margin-top: 30px;'>© 2026 - Bản quyền thuộc Phòng Văn hóa - Xã hội phường Tân Phong</div>", unsafe_allow_html=True)
+
